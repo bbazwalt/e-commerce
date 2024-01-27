@@ -37,7 +37,7 @@ public class AppConfiguration {
 	private CorsConfigurationSource corsConfigurationSource() {
 		return request -> {
 			CorsConfiguration cfg = new CorsConfiguration();
-			cfg.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:3000", "http://localhost:3000","https://e-commerce-web-react.vercel.app"));
+			cfg.setAllowedOriginPatterns(Arrays.asList("https://e-commerce-web-react.vercel.app"));
 			cfg.setAllowedMethods(Collections.singletonList("*"));
 			cfg.setAllowCredentials(true);
 			cfg.setAllowedHeaders(Collections.singletonList("*"));
