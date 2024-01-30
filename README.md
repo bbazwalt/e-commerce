@@ -4,9 +4,9 @@ E-Commerce Web App • Live Link: https://e-commerce-web-react.vercel.app/
 
 • Tech Stack: Java, Spring Boot, JavaScript, React, Redux, Tailwind CSS, MUI, MySQL, Hibernate, Razorpay, Vercel, Railway & TiDB Cloud.
 
-•	Implemented e-commerce functionalities such as product carousels, categories, details, filters, cart, orders, delivery addresses, payments & admin page for tracking order & product status.
+• Implemented e-commerce functionalities such as product carousels, categories, details, filters, cart, orders, delivery addresses, payments & admin page for tracking order & product status, login & signup.
 
-•	Implemented secure login & signup using Spring Security with JWT. Utilized external API endpoints such as Razorpay API for order payments, which can improve user satisfaction, convenience, global reach, security & operational efficiency up to 20%. Deployed the Spring Boot app on Railway & the React app on Vercel. Used TiDB Cloud for the MySQL Database.
+• Utilized external API endpoints such as Razorpay API for order payments, hence improving user satisfaction, convenience, global reach, security & operational efficiency. Deployed the Spring Boot app on Railway & the React app on Vercel. Used TiDB Cloud for the MySQL Database.
 
 
 ## Home Page:
