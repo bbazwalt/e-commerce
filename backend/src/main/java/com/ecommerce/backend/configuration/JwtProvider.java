@@ -16,16 +16,17 @@ public class JwtProvider {
 
 	SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
+
 	public String generateToken(Authentication authentication) {
-		String jwt = Jwts.builder().setIssuer("Benilton Azwalt").setIssuedAt(new Date())
-				.setExpiration(new Date(new Date().getTime() + 86400000)).claim("email", authentication.getName())
+		String jwt = Jwts.builder().issuer("Benilton Azwalt").issuedAt(new Date())
+				.expiration(new Date(new Date().getTime() + 86400000)).claim("email", authentication.getName())
 				.signWith(key).compact();
 		return jwt;
 	}
 
 	public String getEmailFromToken(String jwt) {
 		jwt = jwt.substring(7);
-		Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+		Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload();
 		String email = String.valueOf(claims.get("email"));
 		return email;
 	}
