@@ -6,7 +6,7 @@ E-Commerce Web App • Live Link: https://e-commerce-web-react.vercel.app/
 
 • Implemented e-commerce functionalities such as product carousels, categories, details, filters, cart, orders, delivery addresses, payments & admin page for tracking order & product status, login & signup.
 
-• Utilized external API endpoints such as Razorpay API for order payments, hence improving user satisfaction, convenience, global reach, security & operational efficiency. Deployed the Spring Boot app on Railway & the React app on Vercel. Used TiDB Cloud for the MySQL Database.
+• Utilized external API endpoints such as Razorpay API for order payments, thereby improving user satisfaction, convenience, global reach, security & operational efficiency. Deployed the Spring Boot app on Railway & the React app on Vercel. Used TiDB Cloud for the MySQL Database.
 
 
 ## Home Page:
