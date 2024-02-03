@@ -11,7 +11,7 @@ import {
 export const createOrder = (reqData) => async (dispatch) => {
   dispatch({ type: CREATE_ORDER_REQUEST });
   try {
-    const { data } = await  getApi(localStorage.getItem("jwt")).post("/api/v1/orders", reqData.address);
+    const { data } = await  getApi().post("/api/v1/orders", reqData.address);
     if (data.id) {
       reqData.navigate({ search: `step=3&order_id=${data.id}` });
     }
@@ -24,7 +24,7 @@ export const createOrder = (reqData) => async (dispatch) => {
 export const getOrderById = (orderId) => async (dispatch) => {
   dispatch({ type: GET_ORDER_BY_ID_REQUEST });
   try {
-    const { data } = await  getApi(localStorage.getItem("jwt")).get(`/api/v1/orders/${orderId}`);
+    const { data } = await  getApi().get(`/api/v1/orders/${orderId}`);
     dispatch({ type: GET_ORDER_BY_ID_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: GET_ORDER_BY_ID_FAILURE, payload: error.message });

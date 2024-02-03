@@ -78,7 +78,7 @@ export const findProductsById = (id) => async (dispatch) => {
 export const getAllProducts = () => async (dispatch) => {
   dispatch({ type: GET_ALL_PRODUCTS_REQUEST });
   try {
-    const { data } = await getApi(localStorage.getItem("jwt")).get(`/api/v1/admin/products/all`);
+    const { data } = await getApi().get(`/api/v1/admin/products/all`);
     dispatch({ type: GET_ALL_PRODUCTS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: GET_ALL_PRODUCTS_FAILURE, payload: error.message });
@@ -88,7 +88,7 @@ export const getAllProducts = () => async (dispatch) => {
 export const createProduct = (productData) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
-    const { data } = await  getApi(localStorage.getItem("jwt")).post("/api/v1/admin/products", productData);
+    const { data } = await  getApi().post("/api/v1/admin/products", productData);
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
@@ -98,7 +98,7 @@ export const createProduct = (productData) => async (dispatch) => {
 export const deleteProduct = (productId) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
-    const { data } = await  getApi(localStorage.getItem("jwt")).delete(
+    const { data } = await  getApi().delete(
       `/api/v1/admin/products/${productId}/delete`
     );
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
