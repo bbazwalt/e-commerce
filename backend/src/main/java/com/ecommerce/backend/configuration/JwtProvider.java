@@ -19,16 +19,16 @@ public class JwtProvider {
 
 	public String generateToken(Authentication authentication) {
 		String jwt = Jwts.builder().issuer("Benilton Azwalt").issuedAt(new Date())
-				.expiration(new Date(new Date().getTime() + 86400000)).claim("email", authentication.getName())
+				.expiration(new Date(new Date().getTime() + 86400000)).claim("username", authentication.getName())
 				.signWith(key).compact();
 		return jwt;
 	}
 
-	public String getEmailFromToken(String jwt) {
+	public String getUsernameFromToken(String jwt) {
 		jwt = jwt.substring(7);
 		Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload();
-		String email = String.valueOf(claims.get("email"));
-		return email;
+		String username = String.valueOf(claims.get("username"));
+		return username;
 	}
 
 }

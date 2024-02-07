@@ -1,6 +1,6 @@
 package com.ecommerce.backend.product.rating;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class RatingServiceImpl implements RatingService {
 		rating.setProduct(product);
 		rating.setUser(user);
 		rating.setRating(request.getRating());
-		rating.setCreatedAt(LocalDateTime.now());
+		rating.setCreatedAt(Instant.now());
 		return ratingRepository.save(rating);
 	}
 

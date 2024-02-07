@@ -1,4 +1,4 @@
-package com.ecommerce.backend.user;
+package com.ecommerce.backend.auth;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -21,10 +21,9 @@ public class UserSignupRequest {
 	private String lastName;
 
 	@NotNull
-	@Pattern(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-			+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "{ecommerce.constraints.email.Pattern.message}")
-	private String email;
-
+	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9_.]{5,28}$", message = "{ecommerce.constraints.username.Pattern.message}")
+	private String username;
+	
 	@NotNull
 	@Size(min = 8, max = 255)
 	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{ecommerce.constraints.password.Pattern.message}")

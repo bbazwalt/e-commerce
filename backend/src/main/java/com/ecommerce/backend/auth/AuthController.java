@@ -1,6 +1,6 @@
 package com.ecommerce.backend.auth;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,6 @@ import com.ecommerce.backend.user.CustomUserServiceImpl;
 import com.ecommerce.backend.user.User;
 import com.ecommerce.backend.user.UserException;
 import com.ecommerce.backend.user.UserRepository;
-import com.ecommerce.backend.user.UserSignupRequest;
 
 import jakarta.validation.Valid;
 
@@ -50,26 +49,26 @@ public class AuthController {
 	public ResponseEntity<AuthResponse> createUserHandler(@Valid @RequestBody UserSignupRequest request)
 			throws UserException {
 		try {
-			String email = request.getEmail();
+			String username = request.getUsername();
 			String password = request.getPassword();
 			String firstName = request.getFirstName();
 			String lastName = request.getLastName();
 
-			User isEmailExists = userRepository.findByEmail(email);
+			User isUsernameExists = userRepository.findByUsername(username);
 
-			if (isEmailExists != null) {
-				throw new UserException("Email is already used with another account");
+			if (isUsernameExists != null) {
+				throw new UserException("Username is already used with another account");
 			}
 
 			User createdUser = new User();
-			createdUser.setEmail(email);
+			createdUser.setUsername(username);
 			createdUser.setPassword(passwordEncoder.encode(password));
 			createdUser.setFirstName(firstName);
 			createdUser.setLastName(lastName);
-			createdUser.setCreatedAt(LocalDateTime.now());
+			createdUser.setCreatedAt(Instant.now());
 			User savedUser = userRepository.save(createdUser);
 			cartService.createCart(savedUser);
-			Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(),
+			Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getUsername(),
 					savedUser.getPassword());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			String token = jwtProvider.generateToken(authentication);
@@ -77,17 +76,17 @@ public class AuthController {
 			return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
 		} catch (UserException e) {
 			AuthResponse authResponse = new AuthResponse();
-			authResponse.setMessage("The given email is already used with another account");
+			authResponse.setMessage("The given username is already used with another account");
 			return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
 		}
 
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<AuthResponse> loginUserHandler(@RequestBody LoginRequest loginRequest)
+	public ResponseEntity<AuthResponse> loginUserHandler(@Valid @RequestBody LoginRequest loginRequest)
 			throws BadCredentialsException {
 		try {
-			String username = loginRequest.getEmail();
+			String username = loginRequest.getUsername();
 			String password = loginRequest.getPassword();
 			Authentication authentication = authenticate(username, password);
 			SecurityContextHolder.getContext().setAuthentication(authentication);

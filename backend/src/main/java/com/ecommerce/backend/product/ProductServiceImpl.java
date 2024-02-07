@@ -1,6 +1,6 @@
 package com.ecommerce.backend.product;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setMemory(request.getMemory());
 		product.setQuantity(request.getQuantity());
 		product.setCategory(thirdLevel);
-		product.setCreatedAt(LocalDateTime.now());
+		product.setCreatedAt(Instant.now());
 
 		Product savedProduct = productRepository.save(product);
 

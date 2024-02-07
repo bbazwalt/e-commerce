@@ -1,6 +1,6 @@
 package com.ecommerce.backend.product.rating;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.ecommerce.backend.product.Product;
 import com.ecommerce.backend.user.User;
@@ -37,6 +37,6 @@ public class Review {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 
 }

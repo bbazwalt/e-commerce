@@ -1,6 +1,6 @@
 package com.ecommerce.backend.order;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,10 +73,10 @@ public class OrderServiceImpl implements OrderService {
 
 		createdOrder.setAddress(savedAddress);
 
-		createdOrder.setOrderDate(LocalDateTime.now());
+		createdOrder.setOrderDate(Instant.now());
 		createdOrder.setOrderStatus("PENDING");
 		createdOrder.getPaymentDetails().setStatus("PENDING");
-		createdOrder.setCreatedAt(LocalDateTime.now());
+		createdOrder.setCreatedAt(Instant.now());
 
 		Order savedOrder = orderRepository.save(createdOrder);
 

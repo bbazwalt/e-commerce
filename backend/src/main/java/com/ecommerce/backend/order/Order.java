@@ -1,6 +1,6 @@
 package com.ecommerce.backend.order;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +41,13 @@ public class Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems = new ArrayList<>();
 
-	private LocalDateTime orderDate;
+	private Instant orderDate;
 
-	private LocalDateTime deliveryDate;
-	
-    @ManyToOne
-    @JoinColumn(name = "address_id", unique = false)
-    private Address address;
+	private Instant deliveryDate;
+
+	@ManyToOne
+	@JoinColumn(name = "address_id", unique = false)
+	private Address address;
 
 	@Embedded
 	private PaymentDetails paymentDetails = new PaymentDetails();
@@ -62,5 +62,5 @@ public class Order {
 
 	private int totalItems;
 
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 }

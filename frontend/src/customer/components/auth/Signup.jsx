@@ -45,7 +45,7 @@ const Signup = ({ setIsSignin }) => {
     const userData = {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
-      email: data.get("email"),
+      username: data.get("username"),
       password: data.get("password"),
     };
     dispatch(signup(userData));
@@ -92,15 +92,17 @@ const Signup = ({ setIsSignin }) => {
           <Grid item xs={12}>
             <TextField
               required
-              id="email"
-              name="email"
-              label="Email"
+              id="username"
+              name="username"
+              label="Username"
               fullWidth
-              autoComplete="email"
+              autoComplete="username"
             />
-            {error?.validationErrors?.email && (
+            {error?.validationErrors?.username && (
               <div className="text-center mt-3">
-                <p className="text-red-500">{error.validationErrors.email}</p>
+                <p className="text-red-500">
+                  {error.validationErrors.username}
+                </p>
               </div>
             )}
           </Grid>

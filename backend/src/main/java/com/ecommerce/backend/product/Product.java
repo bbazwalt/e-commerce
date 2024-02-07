@@ -1,6 +1,6 @@
 package com.ecommerce.backend.product;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +76,6 @@ public class Product {
 	@JoinColumn(name = "category_id")
 	private Category category;
 
-	private LocalDateTime createdAt;
+	private Instant createdAt;
 
 }

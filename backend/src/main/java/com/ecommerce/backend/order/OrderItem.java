@@ -1,6 +1,6 @@
 package com.ecommerce.backend.order;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.ecommerce.backend.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,22 +23,22 @@ public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@JsonIgnore
 	@ManyToOne
 	private Order order;
-	
+
 	@ManyToOne
 	private Product product;
-	
+
 	private int quantity;
-	
+
 	private Integer price;
-	
+
 	private Integer discountedPrice;
-	
+
 	private Long userId;
-	
-	private LocalDateTime deliveryDate;
-	
+
+	private Instant deliveryDate;
+
 }

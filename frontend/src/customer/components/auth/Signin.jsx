@@ -38,7 +38,7 @@ const Signin = ({ setIsSignin }) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const userData = {
-      email: data.get("email"),
+      username: data.get("username"),
       password: data.get("password"),
     };
     dispatch(signin(userData));
@@ -56,11 +56,11 @@ const Signin = ({ setIsSignin }) => {
           <Grid item xs={12}>
             <TextField
               required
-              id="email"
-              name="email"
-              label="Email"
+              id="username"
+              name="username"
+              label="Username"
               fullWidth
-              autoComplete="email"
+              autoComplete="username"
             />
           </Grid>
           <Grid item xs={12}>

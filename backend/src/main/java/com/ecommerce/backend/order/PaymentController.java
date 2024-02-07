@@ -65,15 +65,13 @@ public class PaymentController {
 
 			JSONObject customer = new JSONObject();
 			customer.put("name", order.getUser().getFirstName());
-			customer.put("email", order.getUser().getEmail());
 			paymentLinkRequest.put("customer", customer);
 
 			JSONObject notify = new JSONObject();
 			notify.put("sms", true);
-			notify.put("email", true);
 			paymentLinkRequest.put("notify", notify);
 
-			paymentLinkRequest.put("callback_url", "http://localhost:3000/payment/" + orderId);
+			paymentLinkRequest.put("callback_url", "https://e-commerce-pzp8.onrender.com/payment/" + orderId);
 			paymentLinkRequest.put("callback_method", "get");
 			PaymentLink payment = razorpayClient.paymentLink.create(paymentLinkRequest);
 			String paymentLinkId = payment.get("id");

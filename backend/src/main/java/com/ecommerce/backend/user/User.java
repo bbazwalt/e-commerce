@@ -1,12 +1,8 @@
 package com.ecommerce.backend.user;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ecommerce.backend.order.Address;
 import com.ecommerce.backend.order.PaymentInformation;
@@ -35,9 +31,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
-
-	private static final long serialVersionUID = 7823270450104183753L;
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,9 +52,8 @@ public class User implements UserDetails {
 	private String password;
 
 	@NotNull
-	@Pattern(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-			+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "{ecommerce.constraints.email.Pattern.message}")
-	private String email;
+	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9_.]{5,28}$", message = "{ecommerce.constraints.username.Pattern.message}")
+	private String username;
 
 	private String role;
 
@@ -83,42 +76,6 @@ public class User implements UserDetails {
 	@JsonIgnore
 	private List<Review> reviews = new ArrayList<>();
 
-	private LocalDateTime createdAt;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-
-		return false;
-	}
+	private Instant createdAt;
 
 }

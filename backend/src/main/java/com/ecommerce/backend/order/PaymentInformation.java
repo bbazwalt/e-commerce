@@ -1,6 +1,6 @@
 package com.ecommerce.backend.order;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class PaymentInformation {
 	private String cardNumber;
 
 	@Column(name = "expiration_date")
-	private LocalDate expirationDate;
+	private Instant expirationDate;
 
 	@Column(name = "cvv")
 	private String cvv;
