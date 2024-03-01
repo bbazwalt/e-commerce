@@ -2,6 +2,7 @@ import {
   ADD_ITEM_TO_CART_FAILURE,
   ADD_ITEM_TO_CART_REQUEST,
   ADD_ITEM_TO_CART_SUCCESS,
+  CLEAR_CART_ERROR,
   GET_CART_FAILURE,
   GET_CART_REQUEST,
   GET_CART_SUCCESS,
@@ -82,6 +83,12 @@ export const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         error: action.payload,
+        isLoading: false,
+      };
+    case CLEAR_CART_ERROR:
+      return {
+        ...state,
+        error: null,
         isLoading: false,
       };
     default:

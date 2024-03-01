@@ -1,123 +1,130 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Button,
-  FormControl,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Button, Grid, TextField } from "@mui/material";
+import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { signin } from "../../../store/auth/action";
-import { SIGNIN_FAILURE } from "../../../store/auth/actionType";
+import * as Yup from "yup";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import { signIn } from "../../../store/auth/action";
+import { CLEAR_AUTH_ERROR } from "../../../store/auth/actionType";
+import { useAuth } from "../../../store/auth/authContext";
 
-const Signin = ({ setIsSignin }) => {
-  const [showPassword, setShowPassword] = useState(false);
+const validationSchema = Yup.object({
+  username: Yup.string()
+    .required("Username is required")
+    .matches(
+      /^[a-zA-Z][a-zA-Z0-9_.]{5,28}$/,
+      "Username must start with a letter and contain only letters, numbers, underscores, or periods. It must be between 6 to 29 characters long.",
+    ),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters long")
+    .max(255, "Password must not exceed 255 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+    ),
+});
+
+const SignIn = ({ setIsSignIn }) => {
   const dispatch = useDispatch();
-  const auth = useSelector((store) => store.auth);
-  const [error, setError] = useState(null);
+  const { authSignIn } = useAuth();
 
-  useEffect(() => {
-    setError(auth.error);
-  }, [auth.error]);
+  const error = useSelector((store) => store.auth.error);
+  const isLoading = useSelector((store) => store.auth.isLoading);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      dispatch(signIn(values, authSignIn));
+    },
+  });
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+  const handleSignUpClick = () => {
+    setIsSignIn(false);
   };
-
-  const handleSignupClick = () => {
-    setIsSignin(false);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const userData = {
-      username: data.get("username"),
-      password: data.get("password"),
-    };
-    dispatch(signin(userData));
-  };
-
   const handleOnClick = () => {
-    setError(null);
-    dispatch({ type: SIGNIN_FAILURE, payload: null });
+    dispatch({ type: CLEAR_AUTH_ERROR });
   };
 
   return (
     <div onClick={handleOnClick}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <div>
+              <h1 className="-mt-3 mb-3 text-center text-3xl font-semibold">
+                Sign In
+              </h1>
+            </div>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               required
-              id="username"
-              name="username"
-              label="Username"
               fullWidth
+              label="Username"
+              name="username"
               autoComplete="username"
+              id="username"
+              variant="outlined"
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.username && Boolean(formik.errors.username)}
+              helperText={formik.touched.username && formik.errors.username}
             />
           </Grid>
           <Grid item xs={12}>
-            <FormControl sx={{ width: "27.2rem" }} variant="outlined">
-              <InputLabel required htmlFor="password">
-                Password
-              </InputLabel>
-              <OutlinedInput
-                required
-                name="password"
-                label="Password"
-                autoComplete="password"
-                id="password"
-                type={showPassword ? "text" : "password"}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
+            <TextField
+              required
+              fullWidth
+              label="Password"
+              name="password"
+              autoComplete="password"
+              type="password"
+              id="password"
+              variant="outlined"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
           </Grid>
           <Grid item xs={12}>
             <Button
-              className="bg-[#1976D2] w-full"
+              className="w-full bg-[#1976D2]"
               type="submit"
               variant="contained"
               size="large"
               sx={{ padding: ".8rem 0" }}
             >
-              Sign in
+              SIGN IN
             </Button>
           </Grid>
         </Grid>
       </form>
       {error && (
-        <div className="text-center mt-3">
+        <div className="mt-3 text-center">
           <p className="text-red-500">{error}</p>
         </div>
       )}
-      <div className="flex justify-center flex-col items-center ">
-        <div className="pt-3 flex items-center">
-          <p>Don't have an account yet?</p>
-          <Button className="ml-5 " size="small" onClick={handleSignupClick}>
-            Sign up
-          </Button>
-        </div>
+      {isLoading && <LoadingText />}
+
+      <div className="-mb-2 mt-4 flex items-center justify-center space-x-1">
+        <p className="m-0">Don't have an account yet?</p>
+        <Button
+          variant="text"
+          sx={{ mt: "0.15rem" }}
+          onClick={handleSignUpClick}
+        >
+          SIGN UP
+        </Button>
       </div>
     </div>
   );
 };
 
-export default Signin;
+export default SignIn;

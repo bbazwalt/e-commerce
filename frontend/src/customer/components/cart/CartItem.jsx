@@ -1,6 +1,5 @@
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
-import React from "react";
 import { useDispatch } from "react-redux";
 import { removeCartItem, updateCartItem } from "../../../store/cart/action";
 
@@ -19,33 +18,41 @@ const CartItem = ({ item, isSummary }) => {
   };
 
   return (
-    <div className="p-5 shadow-lg border rounded-md">
+    <div className="rounded-md border p-5 shadow-lg">
       <div className="flex items-center">
-        <div className="w-[5rem] h-[5rem] lg:w-[9rem] lg:h-[9rem]">
+        <div className=" h-[9rem] w-[9rem]">
           <img
-            className="w-full h-full object-cover object-top"
-            src={item?.product?.imageUrl}
-            alt=""
+            className="h-full w-full object-cover object-top"
+            src={item?.product?.image}
+            alt={item?.product?.title}
           />
         </div>
-        <div className="ml-5 space-y-1">
+        <div className="ml-5 space-y-3">
+          <p className="font-bold opacity-60">{item?.product?.brand}</p>
           <p className="font-semibold">{item?.product?.title}</p>
-          <p className="opacity-70">
-            Color: {item?.product?.color} | Storage: {item?.product?.storage} |
-            Memory: {item?.product?.memory}
+          <p>
+            Color:
+            <span className="text-gray-500">
+              {" " + item?.product?.color + " | "}
+            </span>
+            Storage:
+            <span className="text-gray-500">
+              {" " + item?.product?.storage + " | "}
+            </span>
+            Memory:
+            <span className="text-gray-500">{" " + item?.product?.memory}</span>
           </p>
-          <p className="opacity-70 mt-2">Seller: {item?.product?.brand}</p>
 
-          <div className="flex space-x-5 items-center text-gray-900 pt-6 ">
+          <div className="flex items-center space-x-2 text-gray-900 ">
             <p className="font-semibold">₹{item?.discountedPrice}</p>
-            <p className="opacity-50 line-through">₹{item?.price}</p>
-            <p className="text-green-600 font-semibold">
+            <p className="line-through opacity-50">₹{item?.price}</p>
+            <p className="font-semibold text-green-600">
               {item?.product?.discountPercent}% off
             </p>
           </div>
         </div>
       </div>
-      <div className="lg:flex items-center lg-space-x-10 pt-4 ">
+      <div className="lg-space-x-10 flex items-center pt-4 ">
         <div className="flex items-center space-x-2 ">
           {!isSummary && (
             <IconButton
@@ -57,12 +64,12 @@ const CartItem = ({ item, isSummary }) => {
             </IconButton>
           )}
           {isSummary && (
-            <div className="py-1 px-5 text-xl ml-10 border rounded-sm text-center">
+            <div className="ml-10 rounded-sm border px-5 py-1 text-center text-xl">
               {item?.quantity}
             </div>
           )}
           {!isSummary && (
-            <span className="py-1 px-5 border rounded-sm text-center">
+            <span className="rounded-sm border px-5 py-1 text-center">
               {item?.quantity}
             </span>
           )}
@@ -82,7 +89,7 @@ const CartItem = ({ item, isSummary }) => {
               onClick={handleRemoveCartItem}
               sx={{ ml: "0.5rem", color: "red" }}
             >
-              remove
+              REMOVE
             </Button>
           </div>
         )}

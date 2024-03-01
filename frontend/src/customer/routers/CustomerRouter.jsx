@@ -1,20 +1,24 @@
-import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import Cart from "../components/cart/Cart";
-import Checkout from "../components/checkout/Checkout";
+import { useAuth } from "../../store/auth/authContext";
 import Footer from "../components/footer/Footer";
 import Navigation from "../components/navigation/Navigation";
-import PaymentSuccess from "../components/payment/PaymentSuccess";
-import Product from "../components/product/Product";
-import ProductDetails from "../components/product/details/ProductDetails";
-import Home from "../pages/Home";
+import Cart from "../pages/cart/Cart";
+import Home from "../pages/home/Home";
+import Checkout from "../pages/order/Checkout";
+import Order from "../pages/order/Order";
+import OrderDetails from "../pages/order/OrderDetails";
+import PaymentSuccess from "../pages/order/PaymentSuccess";
+import Product from "../pages/product/Product";
+import ProductDetails from "../pages/product/ProductDetails";
 const CustomerRouter = () => {
+  const { auth } = useAuth();
+
   const PrivateRoute = ({ children }) => {
-    return localStorage.getItem("jwt") != null ? children : <Navigate to="/" />;
+    return auth.token ? children : <Navigate to="/" replace />;
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Navigation />
       <div className="flex-grow">
         <Routes>
@@ -29,6 +33,22 @@ const CustomerRouter = () => {
           />
           <Route path="/:category/:section" element={<Product />} />
           <Route path="/product/:productId" element={<ProductDetails />} />
+          <Route
+            path="/order/all"
+            element={
+              <PrivateRoute>
+                <Order />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/order/:orderId"
+            element={
+              <PrivateRoute>
+                <OrderDetails />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/checkout"
             element={
@@ -45,6 +65,7 @@ const CustomerRouter = () => {
               </PrivateRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 

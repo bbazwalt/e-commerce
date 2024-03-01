@@ -1,7 +1,6 @@
 import { Box, Modal } from "@mui/material";
-import React from "react";
-import Signin from "./Signin";
-import Signup from "./Signup";
+import SignIn from "./SignIn";
+import SignUp from "./SignUp";
 
 const style = {
   position: "absolute",
@@ -15,7 +14,7 @@ const style = {
   p: 4,
 };
 
-const AuthModal = ({ handleAuthClose, setIsSignin, isSignin, openAuth }) => {
+const AuthModal = ({ handleAuthClose, setIsSignIn, isSignIn, openAuth }) => {
   return (
     <div>
       <Modal
@@ -25,15 +24,15 @@ const AuthModal = ({ handleAuthClose, setIsSignin, isSignin, openAuth }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {isSignin ? (
-            <Signin
+          {isSignIn ? (
+            <SignIn
               handleAuthClose={handleAuthClose}
-              setIsSignin={setIsSignin}
+              setIsSignIn={setIsSignIn}
             />
           ) : (
-            <Signup
+            <SignUp
               handleAuthClose={handleAuthClose}
-              setIsSignin={setIsSignin}
+              setIsSignIn={setIsSignIn}
             />
           )}
         </Box>

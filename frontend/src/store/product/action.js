@@ -1,5 +1,4 @@
 import axios from "axios";
-import { API_BASE_URL, getApi } from "../../api/apiConfig";
 import {
   CREATE_PRODUCT_FAILURE,
   CREATE_PRODUCT_REQUEST,
@@ -22,13 +21,14 @@ export const findProductsByCategory = (category) => async (dispatch) => {
   dispatch({ type: FIND_PRODUCTS_REQUEST });
 
   try {
-    const { data } = await axios.get(
-      `${API_BASE_URL}/api/v1/products/category/${category}`
-    );
+    const { data } = await axios.get(`/products/category/${category}`);
 
     dispatch({ type: FIND_PRODUCTS_SUCCESS, payload: { category, data } });
   } catch (error) {
-    dispatch({ type: FIND_PRODUCTS_FAILURE, payload: error.message });
+    dispatch({
+      type: FIND_PRODUCTS_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
@@ -47,62 +47,74 @@ export const findProducts = (reqData) => async (dispatch) => {
     pageNumber,
     pageSize,
   } = reqData;
-  const colorParam = colors.split(",");
-  const storageParam = storages.split(",");
-  const memoryParam = memories.split(",");
+  const colorParam = colors ? colors.split(",") : [];
+  const storageParam = storages ? storages.split(",") : [];
+  const memoryParam = memories ? memories.split(",") : [];
 
   try {
     const { data } = await axios.get(
-      `${API_BASE_URL}/api/v1/products?colors=${colorParam}&storages=${storageParam}&memories=${memoryParam}&minPrice=${minPrice}&maxPrice=${maxPrice}&minDiscount=${minDiscount}&category=${category}&stock=${stock}&sort=${sort}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `/products?colors=${colorParam}&storages=${storageParam}&memories=${memoryParam}&minPrice=${minPrice}&maxPrice=${maxPrice}&minDiscount=${minDiscount}&category=${category}&stock=${stock}&sort=${sort}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
     );
 
     dispatch({ type: FIND_PRODUCTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: FIND_PRODUCTS_FAILURE, payload: error.message });
+    dispatch({
+      type: FIND_PRODUCTS_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
-export const findProductsById = (id) => async (dispatch) => {
+export const findProductById = (id) => async (dispatch) => {
   dispatch({ type: FIND_PRODUCT_BY_ID_REQUEST });
   try {
-    const { data } = await axios.get(
-      `${API_BASE_URL}/api/v1/products/id/${id}`
-    );
+    const { data } = await axios.get(`/products/${id}`);
     dispatch({ type: FIND_PRODUCT_BY_ID_SUCCESS, payload: data });
     dispatch(findProductsByCategory(data.category.name));
   } catch (error) {
-    dispatch({ type: FIND_PRODUCT_BY_ID_FAILURE, payload: error.message });
+    console.log(error);
+    dispatch({
+      type: FIND_PRODUCT_BY_ID_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
 export const getAllProducts = () => async (dispatch) => {
   dispatch({ type: GET_ALL_PRODUCTS_REQUEST });
   try {
-    const { data } = await getApi().get(`/api/v1/admin/products/all`);
+    const { data } = await axios.get(`/admin/products`);
     dispatch({ type: GET_ALL_PRODUCTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_ALL_PRODUCTS_FAILURE, payload: error.message });
+    dispatch({
+      type: GET_ALL_PRODUCTS_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
 export const createProduct = (productData) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_PRODUCT_REQUEST });
-    const { data } = await  getApi().post("/api/v1/admin/products", productData);
+    const { data } = await axios.post("/admin/products", productData);
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: CREATE_PRODUCT_FAILURE, payload: error.message });
+    dispatch({
+      type: CREATE_PRODUCT_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
 export const deleteProduct = (productId) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
-    const { data } = await  getApi().delete(
-      `/api/v1/admin/products/${productId}/delete`
-    );
+    await axios.delete(`/admin/products/${productId}`);
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: productId });
   } catch (error) {
-    dispatch({ type: DELETE_PRODUCT_FAILURE, payload: error.message });
+    dispatch({
+      type: DELETE_PRODUCT_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };

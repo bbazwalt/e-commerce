@@ -1,18 +1,18 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import App from "./containers/App";
-import "./index.css";
+import { AuthProvider } from "./store/auth/authContext";
 import { store } from "./store/store";
+import "./styles/index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
+  <BrowserRouter>
+    <Provider store={store}>
+      <AuthProvider>
         <App />
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>
+      </AuthProvider>
+    </Provider>
+  </BrowserRouter>,
 );

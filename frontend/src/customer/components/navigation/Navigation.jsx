@@ -1,50 +1,46 @@
-import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
-import {
-  Bars3Icon,
-  ShoppingBagIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Popover, Transition } from "@headlessui/react";
+import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { Menu, MenuItem } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getUser, signout } from "../../../store/auth/action";
-import { getCart } from "../../../store/cart/action";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import { signOut } from "../../../store/auth/action";
+import { useAuth } from "../../../store/auth/authContext";
+import { mainLogo } from "../../data/image/imageData";
+import { navigationData } from "../../data/navigation/navigationData";
 import AuthModal from "../auth/AuthModal";
-import "./../../styles/ProductCard.css";
-import { navigationData } from "./navigationData";
+import "./../../../styles/ProductCard.css";
 
-function classNames(...classes) {
+const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
-}
+};
 
 const Navigation = () => {
-  const [open, setOpen] = useState(false);
   const [openAuth, setOpenAuth] = useState(false);
-  const [isSignin, setIsSignin] = useState(false);
-  const auth = useSelector((store) => store.auth);
+  const [isSignIn, setIsSignIn] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const openMenu = Boolean(anchorEl);
-  const dispatch = useDispatch();
 
+  const openMenu = Boolean(anchorEl);
+
+  const isLoading = useSelector((store) => store.auth.isLoading);
+  const user = useSelector((store) => store.auth.user);
   const cart = useSelector((store) => store.cart);
 
-  useEffect(() => {
-    if (localStorage.getItem("jwt")) {
-      dispatch(getUser(localStorage.getItem("jwt")));
-    }
-  }, [localStorage.getItem("jwt")]);
+  const { authSignOut } = useAuth();
 
-  useEffect(() => {
-    if (localStorage.getItem("jwt")) {
-      dispatch(getCart());
-    }
-  }, [localStorage.getItem("jwt")]);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleAuthOpen = (isSigninProp) => {
-    setIsSignin(isSigninProp);
+  useEffect(() => {
+    if (user) {
+      handleAuthClose();
+    }
+  }, [user]);
+
+  const handleAuthOpen = (isSignInProp) => {
+    setIsSignIn(isSignInProp);
     setOpenAuth(true);
   };
 
@@ -63,7 +59,6 @@ const Navigation = () => {
     if (close) {
       close();
     }
-    setOpen(false);
   };
 
   const handleItemClick = (id, close) => {
@@ -71,7 +66,6 @@ const Navigation = () => {
     if (close) {
       close();
     }
-    setOpen(false);
   };
 
   const handleSectionClick = (category, section, close) => {
@@ -79,212 +73,36 @@ const Navigation = () => {
     if (close) {
       close();
     }
-    setOpen(false);
   };
 
-  const handleSignout = () => {
-    dispatch(signout());
+  const handleSignOut = () => {
     handleClose();
+    dispatch(signOut(authSignOut));
     navigate("/");
+  };
+
+  const handleMyOrders = () => {
+    handleClose();
+    navigate("/order/all");
   };
 
   const handleCartClick = () => {
     navigate("/cart");
   };
 
-  useEffect(() => {
-    if (auth.user) {
-      handleClose();
-      handleAuthClose();
-    }
-  }, [auth.user]);
-
   return (
     <div className="bg-white" style={{ position: "relative", zIndex: 50 }}>
-      <Transition.Root show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
-          <Transition.Child
-            as={Fragment}
-            enter="transition-opacity ease-linear duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-40 flex">
-            <Transition.Child
-              as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
-                <div className="flex px-4 pb-2 pt-5">
-                  <button
-                    type="button"
-                    className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="absolute -inset-0.5" />
-                    <span className="sr-only">Close menu</span>
-                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                </div>
-
-                <Tab.Group as="div" className="mt-2">
-                  <div className="border-b border-gray-200">
-                    <Tab.List className="-mb-px flex space-x-8 px-4">
-                      {navigationData.categories.map((category) => (
-                        <Tab
-                          key={category.name}
-                          className={({ selected }) =>
-                            classNames(
-                              selected
-                                ? "border-indigo-600 text-indigo-600"
-                                : "border-transparent text-gray-900",
-                              "flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium"
-                            )
-                          }
-                        >
-                          {category.name}
-                        </Tab>
-                      ))}
-                    </Tab.List>
-                  </div>
-                  <Tab.Panels as={Fragment}>
-                    {navigationData.categories.map((category) => (
-                      <Tab.Panel
-                        key={category.name}
-                        className="space-y-10 px-4 pb-8 pt-10"
-                      >
-                        <div className="grid grid-cols-2 gap-x-4">
-                          {category.featured.map((item) => (
-                            <div
-                              key={item.name}
-                              className="group relative text-sm product-card py-4"
-                            >
-                              <div className="flex items-center justify-center object-cover object-top w-fit-content h-fit-content overflow-hidden rounded-lg">
-                                <img
-                                  src={item.imageSrc}
-                                  alt={item.imageAlt}
-                                  className="object-cover object-center"
-                                />
-                              </div>
-                              <Link
-                                onClick={() => handleFeaturedClick()}
-                                to={item.href}
-                                className="mt-6 text-center block font-medium text-gray-900"
-                              >
-                                <span
-                                  className="absolute inset-0 z-10 "
-                                  aria-hidden="true"
-                                />
-                                {item.name}
-                              </Link>
-                              <p
-                                aria-hidden="true"
-                                className="mt-1 text-center"
-                              >
-                                Shop now
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                        {category.sections.map((section) => (
-                          <div key={section.name}>
-                            <p
-                              id={`${category.id}-${section.id}-heading-mobile`}
-                              className="font-medium text-gray-900 cursor-pointer"
-                              onClick={() =>
-                                handleSectionClick(category, section)
-                              }
-                            >
-                              {section.name}
-                            </p>
-                            <ul
-                              role="list"
-                              aria-labelledby={`${category.id}-${section.id}-heading-mobile`}
-                              className="mt-6 flex flex-col space-y-6"
-                            >
-                              {section.items.map((item) => (
-                                <li key={item.name} className="flow-root">
-                                  <p
-                                    onClick={() => handleItemClick(item.id)}
-                                    className="-m-2 block p-2 cursor-pointer text-gray-500"
-                                  >
-                                    {item.name}
-                                  </p>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </Tab.Panel>
-                    ))}
-                  </Tab.Panels>
-                </Tab.Group>
-
-                {!auth.user && (
-                  <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                    <div className="flow-root">
-                      <div
-                        onClick={() => handleAuthOpen(true)}
-                        className=" cursor-pointer -m-2 block p-2 font-medium text-gray-900"
-                      >
-                        Sign in
-                      </div>
-                    </div>
-                    <div className="flow-root">
-                      <div
-                        onClick={() => handleAuthOpen(false)}
-                        className=" cursor-pointer -m-2 block p-2 font-medium text-gray-900"
-                      >
-                        Sign up
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition.Root>
-
       <header className="relative bg-white">
-        <nav
-          aria-label="Top"
-          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-        >
+        <nav aria-label="Top" className="mx-auto max-w-7xl px-8">
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center">
-              <button
-                type="button"
-                className="relative rounded-md bg-white p-2 text-gray-400 lg:hidden"
-                onClick={() => setOpen(true)}
-              >
-                <span className="absolute -inset-0.5" />
-                <span className="sr-only">Open menu</span>
-                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-              </button>
-
               <div className="ml-2 flex">
                 <Link to="/">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png"
-                    alt=""
-                  />
+                  <img className="h-6 w-6" src={mainLogo} alt="Main Logo" />
                 </Link>
               </div>
 
-              <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
+              <Popover.Group className="ml-8 block self-stretch ">
                 <div className="flex h-full space-x-8">
                   {navigationData.categories.map((category) => (
                     <Popover key={category.name} className="flex">
@@ -294,9 +112,9 @@ const Navigation = () => {
                             <Popover.Button
                               className={classNames(
                                 open
-                                  ? "border-indigo-600 text-indigo-600"
+                                  ? "border-[#1976d2] text-[#1976d2]"
                                   : "border-transparent text-gray-700 hover:text-gray-800",
-                                "relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out"
+                                "relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out",
                               )}
                             >
                               {category.name}
@@ -312,7 +130,7 @@ const Navigation = () => {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                           >
-                            <Popover.Panel className="absolute inset-x-0 top-full text-sm text-gray-500">
+                            <Popover.Panel className="absolute inset-x-0 top-full text-sm text-gray-500 shadow-xl">
                               <div
                                 className="absolute inset-0 top-1/2 bg-white shadow"
                                 aria-hidden="true"
@@ -325,9 +143,9 @@ const Navigation = () => {
                                       {category.featured.map((item) => (
                                         <div
                                           key={item.name}
-                                          className="group relative py-4 text-base sm:text-sm product-card"
+                                          className="product-card group relative py-4 text-base"
                                         >
-                                          <div className="flex items-center justify-center object-cover object-top w-fit-content h-fit-content overflow-hidden rounded-lg ">
+                                          <div className="w-fit-content h-fit-content flex items-center justify-center overflow-hidden rounded-lg object-cover object-top ">
                                             <img
                                               src={item.imageSrc}
                                               alt={item.imageAlt}
@@ -339,7 +157,7 @@ const Navigation = () => {
                                               handleFeaturedClick(close)
                                             }
                                             to={item.href}
-                                            className="mt-6 text-center block font-medium text-gray-900"
+                                            className="mt-6 block text-center font-medium text-gray-900"
                                           >
                                             <span
                                               className="absolute inset-0 z-10"
@@ -365,21 +183,20 @@ const Navigation = () => {
                                         <div key={section.name}>
                                           <p
                                             id={`${section.name}-heading`}
-                                            className="font-medium text-gray-900 cursor-pointer"
+                                            className="cursor-pointer font-medium text-gray-900"
                                             onClick={() =>
                                               handleSectionClick(
                                                 category,
                                                 section,
-                                                close
+                                                close,
                                               )
                                             }
                                           >
                                             {section.name}
                                           </p>
                                           <ul
-                                            role="list"
                                             aria-labelledby={`${section.name}-heading`}
-                                            className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
+                                            className="mt-6 space-y-6"
                                           >
                                             {section.items.map((item) => (
                                               <li
@@ -390,10 +207,10 @@ const Navigation = () => {
                                                   onClick={() =>
                                                     handleItemClick(
                                                       item.id,
-                                                      close
+                                                      close,
                                                     )
                                                   }
-                                                  className="-m-2 block p-2 cursor-pointer text-gray-500"
+                                                  className="-m-2 block cursor-pointer p-2 text-gray-500"
                                                 >
                                                   {item.name}
                                                 </p>
@@ -415,90 +232,127 @@ const Navigation = () => {
                 </div>
               </Popover.Group>
 
-              <div className="ml-auto flex items-center">
-                {!auth.user && (
-                  <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                    <div
-                      onClick={() => handleAuthOpen(true)}
-                      className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
-                    >
-                      Sign in
-                    </div>
-                    <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                    <div
-                      onClick={() => handleAuthOpen(false)}
-                      className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
-                    >
-                      Sign up
-                    </div>
-                  </div>
-                )}
+              {isLoading ? (
+                <div className="mb-4 ml-auto">
+                  <LoadingText />
+                </div>
+              ) : (
+                <div className="ml-auto flex items-center">
+                  {!user && (
+                    <div className="flex flex-1 items-center justify-end space-x-5">
+                      <div
+                        onClick={() => handleAuthOpen(true)}
+                        className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
+                      >
+                        Sign In
+                      </div>
 
-                {auth.user && (
-                  <div className="flex flex-row items-center justify-center">
-                    <div
-                      className="border-transparent mr-5 text-gray-900 hover:text-gray-700 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-normal transition-colors duration-200 ease-out"
-                      type="button"
-                      aria-expanded="false"
-                      data-headlessui-state=""
-                      id="headlessui-popover-button-:r6:"
-                    >
-                      {auth.user.firstName + " " + auth.user.lastName}
+                      <div
+                        onClick={() => handleAuthOpen(false)}
+                        className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
+                      >
+                        Sign Up
+                      </div>
                     </div>
-                    <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                    <div className="lg:ml-6 mr-3 lg:mr-0 ">
-                      <button
-                        className="border-transparent text-gray-700 hover:text-gray-800 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out"
+                  )}
+                  {user && (
+                    <div className="flex flex-row items-center justify-center space-x-5">
+                      <div
+                        className="relative z-10 -mb-px flex items-center break-words border-b-2 border-transparent pt-px text-sm font-normal text-gray-900 transition-colors duration-200 ease-out hover:text-gray-700"
                         type="button"
-                        aria-controls={openMenu ? "profile-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={openMenu ? "true" : undefined}
-                        onClick={handleClick}
+                        aria-expanded="false"
                         data-headlessui-state=""
                         id="headlessui-popover-button-:r6:"
                       >
-                        My account
-                      </button>
-                      <Menu
-                        id="profile-menu"
-                        anchorEl={anchorEl}
-                        open={openMenu}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          "aria-labelledby": "profile-button",
+                        {user.fullName}
+                      </div>
+
+                      <div
+                        onClick={handleCartClick}
+                        className="group flex items-center py-2"
+                      >
+                        <ShoppingBagIcon
+                          className=" h-6 w-6 flex-shrink-0 cursor-pointer text-gray-400 group-hover:text-gray-500"
+                          aria-hidden="true"
+                        />
+                        <span className="ml-1 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                          {cart?.cart?.totalItems}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="ml-5">
+                    <BsThreeDotsVertical
+                      className="cursor-pointer"
+                      type="button"
+                      aria-controls={openMenu ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={openMenu ? "true" : undefined}
+                      onClick={handleClick}
+                    />
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={openMenu}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      {user && (
+                        <MenuItem
+                          sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            lineHeight: "1.25rem",
+                            padding: "0.4rem 0.6rem",
+                          }}
+                          onClick={handleMyOrders}
+                        >
+                          My Orders
+                        </MenuItem>
+                      )}
+                      {user && (
+                        <MenuItem
+                          sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
+                            lineHeight: "1.25rem",
+                            padding: "0.4rem 0.6rem",
+                          }}
+                          onClick={handleSignOut}
+                        >
+                          Sign Out
+                        </MenuItem>
+                      )}
+
+                      <MenuItem
+                        sx={{
+                          fontSize: "0.875rem",
+                          fontWeight: 500,
+                          lineHeight: "1.25rem",
+                          padding: "0.4rem 0.6rem",
+                        }}
+                        onClick={() => {
+                          handleClose();
+
+                          navigate("/admin");
                         }}
                       >
-                        <MenuItem onClick={handleSignout}>Sign out</MenuItem>
-                      </Menu>
-                    </div>
+                        Switch to Admin Page
+                      </MenuItem>
+                    </Menu>
                   </div>
-                )}
-                {auth.user && (
-                  <div className="ml-4 flow-root lg:ml-6">
-                    <div
-                      onClick={handleCartClick}
-                      className="group -m-2 flex items-center p-2"
-                    >
-                      <ShoppingBagIcon
-                        className=" cursor-pointer h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                        aria-hidden="true"
-                      />
-                      <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                        {cart?.cart?.totalItems}
-                      </span>
-                      <span className="sr-only">items in cart, view bag</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </nav>
       </header>
       <AuthModal
-        setIsSignin={setIsSignin}
+        setIsSignIn={setIsSignIn}
         handleAuthClose={handleAuthClose}
-        isSignin={isSignin}
+        isSignIn={isSignIn}
         openAuth={openAuth}
       />
     </div>

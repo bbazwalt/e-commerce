@@ -1,5 +1,4 @@
 import axios from "axios";
-import { API_BASE_URL } from "../../api/apiConfig";
 import {
   ADD_ITEM_TO_CART_FAILURE,
   ADD_ITEM_TO_CART_REQUEST,
@@ -18,34 +17,22 @@ import {
 export const getCart = () => async (dispatch) => {
   dispatch({ type: GET_CART_REQUEST });
   try {
-    const { data } = await axios.get(`${API_BASE_URL}/api/v1/cart`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-    });
+    const { data } = await axios.get(`/cart`);
     dispatch({ type: GET_CART_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_CART_FAILURE, payload: error.message });
+    dispatch({ type: GET_CART_FAILURE, payload: error?.response?.data?.message });
   }
 };
 
 export const addItemToCart = (reqData) => async (dispatch) => {
   dispatch({ type: ADD_ITEM_TO_CART_REQUEST });
   try {
-    const { data } = await axios.put(
-      `${API_BASE_URL}/api/v1/cart/add`,
-      reqData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      }
-    );
+    const { data } = await axios.post(`/cart`, reqData);
     dispatch({ type: ADD_ITEM_TO_CART_SUCCESS, payload: data });
     dispatch(getCart());
     dispatch(reqData.navigate("/cart"));
   } catch (error) {
-    dispatch({ type: ADD_ITEM_TO_CART_FAILURE, payload: error.message });
+    dispatch({ type: ADD_ITEM_TO_CART_FAILURE, payload: error?.response?.data?.message });
   }
 };
 
@@ -53,35 +40,23 @@ export const updateCartItem = (reqData) => async (dispatch) => {
   dispatch({ type: UPDATE_CART_ITEM_REQUEST });
   try {
     const { data } = await axios.put(
-      `${API_BASE_URL}/api/v1/cart_items/${reqData.cartItemId}`,
-      reqData.data,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      }
+      `/cart-items/${reqData.cartItemId}`,
+      reqData.data
     );
     dispatch(getCart());
     dispatch({ type: UPDATE_CART_ITEM_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: UPDATE_CART_ITEM_FAILURE, payload: error.message });
+    dispatch({ type: UPDATE_CART_ITEM_FAILURE, payload: error?.response?.data?.message });
   }
 };
-
+ 
 export const removeCartItem = (cartItemId) => async (dispatch) => {
   dispatch({ type: REMOVE_CART_ITEM_REQUEST });
   try {
-    const { data } = await axios.delete(
-      `${API_BASE_URL}/api/v1/cart_items/${cartItemId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      }
-    );
+    const { data } = await axios.delete(`/cart-items/${cartItemId}`);
     dispatch(getCart());
     dispatch({ type: REMOVE_CART_ITEM_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: REMOVE_CART_ITEM_FAILURE, payload: error.message });
+    dispatch({ type: REMOVE_CART_ITEM_FAILURE, payload: error?.response?.data?.message });
   }
 };
