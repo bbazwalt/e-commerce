@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EmptyItemsText from "../../../shared/components/infoText/EmptyItemsText";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { deleteProduct, getAllProducts } from "../../../store/product/action";
+import { deleteProduct, getAllProducts } from "../../../redux/product/action";
 
 const ProductsTable = () => {
   const dispatch = useDispatch();

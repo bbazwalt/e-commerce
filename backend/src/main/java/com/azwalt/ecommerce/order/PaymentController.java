@@ -84,7 +84,7 @@ public class PaymentController {
 
 			return new ResponseEntity<PaymentLinkResponse>(res, HttpStatus.CREATED);
 
-		} catch (RazorpayException | OrderException exception) {
+		} catch (OrderException exception) {
 			return new ResponseEntity<ApiResponse>(new ApiResponse(exception.getMessage(), false),
 					HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
@@ -112,7 +112,7 @@ public class PaymentController {
 		} catch (UsernameNotFoundException usernameNotFoundException) {
 			return new ResponseEntity<ApiResponse>(new ApiResponse(usernameNotFoundException.getMessage(), false),
 					HttpStatus.NOT_FOUND);
-		} catch (RazorpayException | OrderException exception) {
+		} catch (OrderException exception) {
 			return new ResponseEntity<ApiResponse>(new ApiResponse(exception.getMessage(), false),
 					HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {

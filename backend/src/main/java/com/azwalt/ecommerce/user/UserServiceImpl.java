@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 		if (opt.isPresent()) {
 			return opt.get();
 		}
-		throw new UserException("User not found with the given ID.");
+		throw new UserException("No user found with the given ID.");
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 		}
 		User user = userRepository.findByUsername(username);
 		if (user == null) {
-			throw new UsernameNotFoundException("User not found with the given username.");
+			throw new UsernameNotFoundException("No user found with the given username.");
 		}
 		return user;
 	}

@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
-import { CLEAR_CART_ERROR } from "../../../store/cart/actionType";
+import { CLEAR_CART_ERROR } from "../../../redux/cart/actionType";
 import AddressForm from "../../components/order/AddressForm";
 import OrderSummary from "../../components/order/OrderSummary";
 

@@ -6,12 +6,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { signOut } from "../../../store/auth/action";
-import { useAuth } from "../../../store/auth/authContext";
+import { signOut } from "../../../redux/auth/action";
+import { useAuth } from "../../../redux/auth/authContext";
 import { mainLogo } from "../../data/image/imageData";
 import { navigationData } from "../../data/navigation/navigationData";
 import AuthModal from "../auth/AuthModal";
-import "./../../../styles/ProductCard.css";
+import "./../../../styles/product/ProductCard.css";
 
 const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");

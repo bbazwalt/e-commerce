@@ -2,9 +2,9 @@ import { Alert, AlertTitle } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCart } from "../../../store/cart/action";
+import { getCart } from "../../../redux/cart/action";
 import OrderDetails from "./OrderDetails";
-import { getOrderById, updatePayment } from "../../../store/order/customer/action";
+import { getOrderById, updatePayment } from "../../../redux/order/customer/action";
 
 const PaymentSuccess = () => {
   const [paymentId, setPaymentId] = useState();

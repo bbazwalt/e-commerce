@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
 import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
-import { addItemToCart } from "../../../store/cart/action";
-import { findProductById } from "../../../store/product/action";
-import { CLEAR_PRODUCT_ERROR } from "../../../store/product/actionType";
+import { addItemToCart } from "../../../redux/cart/action";
+import { findProductById } from "../../../redux/product/action";
+import { CLEAR_PRODUCT_ERROR } from "../../../redux/product/actionType";
 import SectionCard from "../../components/home/carousel/section/SectionCard";
 
 const ProductDetails = () => {

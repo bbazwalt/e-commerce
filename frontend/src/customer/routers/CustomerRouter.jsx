@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useAuth } from "../../store/auth/authContext";
+import { useAuth } from "../../redux/auth/authContext";
 import Footer from "../components/footer/Footer";
 import Navigation from "../components/navigation/Navigation";
 import Cart from "../pages/cart/Cart";

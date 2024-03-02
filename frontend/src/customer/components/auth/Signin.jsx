@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { signIn } from "../../../store/auth/action";
-import { CLEAR_AUTH_ERROR } from "../../../store/auth/actionType";
-import { useAuth } from "../../../store/auth/authContext";
+import { signIn } from "../../../redux/auth/action";
+import { CLEAR_AUTH_ERROR } from "../../../redux/auth/actionType";
+import { useAuth } from "../../../redux/auth/authContext";
 
 const validationSchema = Yup.object({
   username: Yup.string()

@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
 import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
-import { findProducts } from "../../../store/product/action";
-import { CLEAR_PRODUCT_ERROR } from "../../../store/product/actionType";
+import { findProducts } from "../../../redux/product/action";
+import { CLEAR_PRODUCT_ERROR } from "../../../redux/product/actionType";
 import ProductCard from "../../components/product/ProductCard";
 import { filters, singleFilters } from "../../data/product/filterData";
 

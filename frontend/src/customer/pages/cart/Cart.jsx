@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { currentUser } from "../../../store/auth/action";
-import { getCart } from "../../../store/cart/action";
+import { currentUser } from "../../../redux/auth/action";
+import { getCart } from "../../../redux/cart/action";
 import PriceDetails from "../../components/cart/PriceDetails";
 import CartItem from "../../components/cart/CartItem";
 

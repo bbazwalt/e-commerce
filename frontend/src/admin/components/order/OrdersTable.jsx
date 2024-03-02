@@ -26,7 +26,7 @@ import {
   pendingOrder,
   placeOrder,
   shipOrder,
-} from "../../../store/order/admin/action";
+} from "../../../redux/order/admin/action";
 
 const getOrderStatusColor = (orderStatus) => {
   return orderStatus === "PENDING"

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { findProductsByCategory } from "../../../store/product/action";
+import { findProductsByCategory } from "../../../redux/product/action";
 import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
-import { CLEAR_PRODUCT_ERROR } from "../../../store/product/actionType";
+import { CLEAR_PRODUCT_ERROR } from "../../../redux/product/actionType";
 import MainCarousel from "../../components/home/carousel/main/MainCarousel";
 import SectionCarousel from "../../components/home/carousel/section/SectionCarousel";
 

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { createOrder, getUserAddresses } from "../../../store/order/customer/action";
+import { createOrder, getUserAddresses } from "../../../redux/order/customer/action";
 import AddressCard from "./AddressCard";
 
 const AddressForm = () => {

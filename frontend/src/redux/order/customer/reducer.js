@@ -27,8 +27,8 @@ const initialState = {
   isLoading: false,
 };
 
-export const orderReducer = (state = initialState, action) => {
-  switch (action.type) {
+export const orderReducer = (state = initialState, {type,payload}) => {
+  switch (type) {
     case CREATE_ORDER_REQUEST:
     case FIND_ORDERS_REQUEST:
     case GET_ORDER_BY_ID_REQUEST:
@@ -44,14 +44,14 @@ export const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        order: action.payload,
+        order: payload,
         error: null,
       };
     case FIND_ORDERS_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        orders: action.payload,
+        orders: payload,
         error: null,
       };
     case GET_ORDER_BY_ID_SUCCESS:
@@ -59,13 +59,13 @@ export const orderReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         error: null,
-        order: action.payload,
+        order: payload,
       };
     case GET_USER_ADDRESSES_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        addresses: action.payload,
+        addresses: payload,
         error: null,
       };
     case CREATE_PAYMENT_SUCCESS:
@@ -80,7 +80,7 @@ export const orderReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: payload,
       };
     case CLEAR_ORDER_ERROR:
       return {

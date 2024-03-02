@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct } from "../../../store/product/action";
-import { CLEAR_PRODUCT_MESSAGE } from "../../../store/product/actionType";
+import { createProduct } from "../../../redux/product/action";
+import { CLEAR_PRODUCT_MESSAGE } from "../../../redux/product/actionType";
 
 const AddProductForm = () => {
   const [productData, setProductData] = useState({

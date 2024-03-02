@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { findOrders } from "../../../store/order/customer/action";
+import { findOrders } from "../../../redux/order/customer/action";
 import OrderCard from "../../components/order/OrderCard";
 import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
-import { CLEAR_ORDER_ERROR } from "../../../store/order/customer/actionType";
+import { CLEAR_ORDER_ERROR } from "../../../redux/order/customer/actionType";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },

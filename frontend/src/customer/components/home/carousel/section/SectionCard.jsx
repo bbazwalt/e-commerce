@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./../../../../../styles/ProductCard.css";
+import "./../../../../../styles/product/ProductCard.css";
 
 const SectionCard = ({ scrollToTop, product }) => {
   const navigate = useNavigate();

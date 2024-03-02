@@ -21,23 +21,23 @@ const initialState = {
   error: null,
 };
 
-export const cartReducer = (state = initialState, action) => {
-  switch (action.type) {
+export const cartReducer = (state = initialState, {type,payload}) => {
+  switch (type) {
     case ADD_ITEM_TO_CART_REQUEST:
       return { ...state, isLoading: true, error: null };
     case ADD_ITEM_TO_CART_SUCCESS:
       return {
         ...state,
         error: null,
-        cartItems: [...state.cartItems, action.payload.cartItems],
-        cart: action.payload,
+        cartItems: [...state.cartItems, payload.cartItems],
+        cart: payload,
         isLoading: false,
       };
     case ADD_ITEM_TO_CART_FAILURE:
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: payload,
       };
     case GET_CART_REQUEST:
       return {
@@ -49,12 +49,12 @@ export const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         error: null,
-        cartItems: action.payload.cartItems,
-        cart: action.payload,
+        cartItems: payload.cartItems,
+        cart: payload,
         isLoading: false,
       };
     case GET_CART_FAILURE:
-      return { ...state, isLoading: false, error: action.payload };
+      return { ...state, isLoading: false, error: payload };
     case REMOVE_CART_ITEM_REQUEST:
     case UPDATE_CART_ITEM_REQUEST:
       return {
@@ -66,14 +66,14 @@ export const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         error: null,
-        cartItems: state.cartItems.filter((item) => item.id !== action.payload),
+        cartItems: state.cartItems.filter((item) => item.id !== payload),
         isLoading: false,
       };
     case UPDATE_CART_ITEM_SUCCESS:
       return {
         ...state,
         cartItems: state.cartItems.map((item) =>
-          item.id === action.payload.id ? action.payload : item
+          item.id === payload.id ? payload : item
         ),
         error: null,
         isLoading: false,
@@ -82,7 +82,7 @@ export const cartReducer = (state = initialState, action) => {
     case UPDATE_CART_ITEM_FAILURE:
       return {
         ...state,
-        error: action.payload,
+        error: payload,
         isLoading: false,
       };
     case CLEAR_CART_ERROR:

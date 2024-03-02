@@ -28,8 +28,8 @@ const initialState = {
   error: null,
 };
 
-export const adminOrderReducer = (state = initialState, action) => {
-  switch (action.type) {
+export const adminOrderReducer = (state = initialState, {type,payload}) => {
+  switch (type) {
     case GET_ORDERS_REQUEST:
     case CONFIRM_ORDER_REQUEST:
     case SHIP_ORDER_REQUEST:
@@ -47,7 +47,7 @@ export const adminOrderReducer = (state = initialState, action) => {
 
         isLoading: false,
 
-        orders: action.payload,
+        orders: payload,
         error: null,
       };
     case PENDING_ORDER_SUCCESS:
@@ -60,7 +60,7 @@ export const adminOrderReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         orders: state.orders.map((order) =>
-          order.id === action.payload.id ? action.payload : order,
+          order.id === payload.id ? payload : order,
         ),
         error: null,
       };
@@ -68,7 +68,7 @@ export const adminOrderReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        orders: state.orders.filter((order) => order.id !== action.payload),
+        orders: state.orders.filter((order) => order.id !== payload),
         error: null,
       };
     case GET_ORDERS_FAILURE:
@@ -76,7 +76,7 @@ export const adminOrderReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         orders: [],
-        error: action.payload,
+        error: payload,
       };
     case CONFIRM_ORDER_FAILURE:
     case SHIP_ORDER_FAILURE:
@@ -86,7 +86,7 @@ export const adminOrderReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        error: action.payload,
+        error: payload,
       };
     case CLEAR_ADMIN_ORDER_ERROR:
       return {

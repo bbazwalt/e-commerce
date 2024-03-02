@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { getOrderById } from "../../../store/order/customer/action";
+import { getOrderById } from "../../../redux/order/customer/action";
 import CartItem from "../../components/cart/CartItem";
 import OrderTracker from "../../components/order/OrderTracker";
 import AddressCard from "../../components/order/AddressCard";

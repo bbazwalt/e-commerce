@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { bypassPayment, createPayment, getOrderById } from "../../../store/order/customer/action";
+import { bypassPayment, createPayment, getOrderById } from "../../../redux/order/customer/action";
 import AddressCard from "./AddressCard";
 import CartItem from "../cart/CartItem";
 import PriceDetails from "../cart/PriceDetails";
