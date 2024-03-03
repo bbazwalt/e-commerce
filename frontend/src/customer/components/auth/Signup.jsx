@@ -36,7 +36,6 @@ const SignUp = ({ setIsSignIn }) => {
   const formik = useFormik({
     initialValues: {
       fullName: "",
-      lastName: "",
       username: "",
       password: "",
       admin: false,

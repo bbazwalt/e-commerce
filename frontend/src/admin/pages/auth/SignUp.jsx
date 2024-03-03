@@ -3,10 +3,10 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import LoadingText from "../../../shared/components/infoText/LoadingText";
 import { signUp } from "../../../redux/auth/action";
 import { CLEAR_AUTH_ERROR } from "../../../redux/auth/actionType";
 import { useAuth } from "../../../redux/auth/authContext";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
 
 const validationSchema = Yup.object({
   fullName: Yup.string()
@@ -38,8 +38,7 @@ const SignUp = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
+      fullName: "",
       username: "",
       password: "",
       admin: true,
@@ -76,9 +75,7 @@ const SignUp = () => {
               value={formik.values.fullName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={
-                formik.touched.fullName && Boolean(formik.errors.fullName)
-              }
+              error={formik.touched.fullName && Boolean(formik.errors.fullName)}
               helperText={formik.touched.fullName && formik.errors.fullName}
             />
           </div>
