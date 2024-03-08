@@ -11,6 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,28 +28,40 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	private String firstName;
-
-	private String lastName;
-
-	private String streetAddress;
-
-	private String city;
-
-	private String state;
-
-	private String country;
-
-	private String postalCode;
-
-	private String email;
-
-	private String phoneNumber;
-
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@JsonIgnore
 	private User user;
+
+	@NotBlank(message = "{address.constraints.firstName.NotBlank.message}")
+	private String firstName;
+
+	@NotBlank(message = "{address.constraints.lastName.NotBlank.message}")
+	private String lastName;
+
+	@NotBlank(message = "{address.constraints.streetAddress.NotBlank.message}")
+	private String streetAddress;
+
+	@NotBlank(message = "{address.constraints.city.NotBlank.message}")
+	private String city;
+
+	@NotBlank(message = "{address.constraints.state.NotBlank.message}")
+	private String state;
+
+	@NotBlank(message = "{address.constraints.country.NotBlank.message}")
+	private String country;
+
+	@NotBlank(message = "{address.constraints.postalCode.NotBlank.message}")
+	@Pattern(regexp = "^[1-9][0-9]{5}$", message = "{address.constraints.postalCode.Pattern.message}")
+	private String postalCode;
+
+	@NotBlank(message = "{address.constraints.email.NotBlank.message}")
+	@Email(message = "{address.constraints.email.Email.message}")
+	private String email;
+
+	@NotBlank(message = "{address.constraints.phoneNumber.NotBlank.message}")
+	@Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "{address.constraints.phoneNumber.Pattern.message}")
+	private String phoneNumber;
 
 	@Override
 	public boolean equals(Object o) {

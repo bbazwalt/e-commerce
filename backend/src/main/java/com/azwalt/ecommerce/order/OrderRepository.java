@@ -8,10 +8,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-	@Query("SELECT o FROM Order o WHERE o.user.id=:userId ORDER BY o.orderDate DESC")
-	public Set<Order> findUserOrdersByUserId(@Param("userId") Long userId);
+	@Query("SELECT o FROM Order o WHERE o.user.id=:userId ORDER BY o.createdAt DESC")
+	public Set<Order> findUserOrders(@Param("userId") Long userId);
 
-	@Query("SELECT o FROM Order o WHERE o.user.id=:userId AND o.orderStatus IN :statuses ORDER BY o.orderDate DESC")
-	public Set<Order> findUserOrdersByStatus(@Param("userId") Long userId, @Param("statuses") Set<String> statuses);
+	@Query("SELECT o FROM Order o WHERE o.user.id=:userId AND o.orderStatus IN :statuses ORDER BY o.createdAt DESC")
+	public Set<Order> findUserOrdersByStatus(@Param("userId") Long userId,
+			@Param("statuses") Set<OrderStatus> statuses);
 
 }

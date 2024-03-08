@@ -8,12 +8,13 @@ import com.azwalt.ecommerce.order.Address;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -26,28 +27,31 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Size(min = 1, max = 255, message = "{user.constraints.fullName.Size.message}")
+    @NotBlank(message = "{user.constraints.fullName.NotBlank.message}")
+    @Size(max = 255, message = "{user.constraints.fullName.Size.message}")
     private String fullName;
 
+    @NotBlank(message = "{user.constraints.username.NotBlank.message}")
     @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9_.]{5,28}$", message = "{user.constraints.username.Pattern.message}")
     private String username;
 
-    @JsonIgnore
+    @NotBlank(message = "{user.constraints.password.NotBlank.message}")
     @Size(min = 8, max = 255, message = "{user.constraints.password.Size.message}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{user.constraints.password.Pattern.message}")
+    @JsonIgnore
     private String password;
 
-	@Column(name = "is_admin")
-	private boolean isAdmin;
+    @NotNull
+    private boolean isAdmin;
 
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private Set<Address> addresses = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Address> addresses = new LinkedHashSet<>();
 
-	private Instant createdAt;
+    private Instant createdAt;
 
 }

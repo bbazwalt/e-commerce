@@ -5,6 +5,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,33 +19,38 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.azwalt.ecommerce.shared.ApiConstants;
+
 @Configuration
 @EnableWebSecurity
 public class AppConfiguration {
 
+	private static final Logger logger = LoggerFactory.getLogger(AppConfiguration.class);
+
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/v1/products/**").permitAll()
-						.requestMatchers("/api/v1/**").authenticated().anyRequest().permitAll())
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers(ApiConstants.BASE_API_PATH + "products/**").permitAll()
+						.requestMatchers(ApiConstants.BASE_API_PATH + "**").authenticated().anyRequest().permitAll())
 				.addFilterBefore(new TokenValidator(), BasicAuthenticationFilter.class).csrf(csrf -> {
 					try {
 						csrf.disable().cors(cors -> cors.configurationSource(corsConfigurationSource()));
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Exception exception) {
+						logger.error("Error disabling CSRF: {}", exception.getMessage());
 					}
 				}).formLogin(withDefaults()).httpBasic(withDefaults());
-		return http.build();
+		return httpSecurity.build();
 	}
 
 	private CorsConfigurationSource corsConfigurationSource() {
 		return request -> {
 			CorsConfiguration cfg = new CorsConfiguration();
-			cfg.setAllowedOriginPatterns(Arrays.asList("https://azwalt-e-commerce.vercel.app"));
+			cfg.setAllowedOriginPatterns(Arrays.asList(CorsConstants.CORS_API_URL));
 			cfg.setAllowedMethods(Collections.singletonList("*"));
 			cfg.setAllowCredentials(true);
 			cfg.setAllowedHeaders(Collections.singletonList("*"));
-			cfg.setExposedHeaders(Arrays.asList("Authorization"));
+			cfg.setExposedHeaders(Arrays.asList(TokenConstants.REQUEST_HEADER));
 			cfg.setMaxAge(3600L);
 			return cfg;
 		};

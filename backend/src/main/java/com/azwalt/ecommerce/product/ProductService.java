@@ -8,9 +8,9 @@ public interface ProductService {
 
 	public Product createProduct(CreateProductRequest createProductRequest);
 
-	public void deleteProduct(Long id) throws Exception;
-
 	public Product findProductById(Long id) throws Exception;
+
+	public Set<Product> findAllProducts();
 
 	public Set<Product> findProductsByCategoryName(String categoryName);
 
@@ -18,5 +18,6 @@ public interface ProductService {
 			Set<String> memories, int minPrice,
 			int maxPrice, int minDiscount, String sort, String stock, int pageNumber, int pageSize);
 
-	public Set<Product> findAllProducts();
+	public void deleteProduct(Long id) throws Exception;
+
 }

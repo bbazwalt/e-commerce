@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PaymentLinkResponse {
 
-	private String payment_link_url;
-	private String payment_link_id;
+	private String paymentLinkId;
+	private String paymentLinkUrl;
 
 }

@@ -1,4 +1,4 @@
-package com.azwalt.ecommerce.product;
+package com.azwalt.ecommerce.product.category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

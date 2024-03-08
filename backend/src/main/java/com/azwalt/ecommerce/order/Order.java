@@ -8,6 +8,8 @@ import com.azwalt.ecommerce.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,26 +36,29 @@ public class Order {
 	@ManyToOne
 	private User user;
 
+	@PositiveOrZero(message = "{product.constraints.quantity.PositiveOrZero.message}")
+	private int totalItems;
+
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems = new ArrayList<>();
 
-	private Instant orderDate;
+	@PositiveOrZero(message = "{product.constraints.price.PositiveOrZero.message}")
+	private int totalPrice;
 
-	private Instant deliveryDate;
+	@PositiveOrZero(message = "{product.constraints.discountedPrice.PositiveOrZero.message}")
+	private int totalDiscountedPrice;
+
+	@PositiveOrZero(message = "{product.constraints.price.PositiveOrZero.message}")
+	private int discount;
 
 	@ManyToOne
 	@JoinColumn(name = "address_id", unique = false)
 	private Address address;
 
-	private int totalPrice;
-
-	private int totalDiscountedPrice;
-
-	private int discount;
-
-	private String orderStatus;
-
-	private int totalItems;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus;
 
 	private Instant createdAt;
+
+	private Instant deliveryDate;
 }

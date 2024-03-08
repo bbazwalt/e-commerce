@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,16 +33,20 @@ public class Cart {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<CartItem> cartItems = new LinkedHashSet<>();
-
-	private int totalPrice;
-
+	@PositiveOrZero(message = "{product.constraints.quantity.PositiveOrZero.message}")
 	private int totalItems;
 
+	@PositiveOrZero(message = "{product.constraints.price.PositiveOrZero.message}")
+	private int totalPrice;
+
+	@PositiveOrZero(message = "{product.constraints.discountedPrice.PositiveOrZero.message}")
 	private int totalDiscountedPrice;
 
+	@PositiveOrZero(message = "{product.constraints.price.PositiveOrZero.message}")
 	private int discount;
+
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<CartItem> cartItems = new LinkedHashSet<>();
 
 	@Override
 	public int hashCode() {
@@ -49,19 +54,6 @@ public class Cart {
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
-	}
-
-	@Override
-	public String toString() {
-		return "Cart{" +
-				"id=" + id +
-				", userId=" + (user != null ? user.getId() : "null") +
-				", cartItemsSize=" + (cartItems != null ? cartItems.size() : 0) +
-				", totalPrice=" + totalPrice +
-				", totalItems=" + totalItems +
-				", totalDiscountedPrice=" + totalDiscountedPrice +
-				", discount=" + discount +
-				'}';
 	}
 
 }
