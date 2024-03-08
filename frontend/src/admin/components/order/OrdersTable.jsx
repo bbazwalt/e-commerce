@@ -11,12 +11,10 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import EmptyItemsText from "../../../shared/components/infoText/EmptyItemsText";
-import LoadingText from "../../../shared/components/infoText/LoadingText";
 import {
   cancelOrder,
   confirmOrder,
@@ -27,6 +25,10 @@ import {
   placeOrder,
   shipOrder,
 } from "../../../redux/order/admin/action";
+import { CLEAR_ORDER_ERROR } from "../../../redux/order/customer/actionType";
+import EmptyItemsText from "../../../shared/components/infoText/EmptyItemsText";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
 
 const getOrderStatusColor = (orderStatus) => {
   return orderStatus === "PENDING"
@@ -44,9 +46,16 @@ const getOrderStatusColor = (orderStatus) => {
 
 const OrdersTable = () => {
   const [anchorEl, setAnchorEl] = useState([]);
-  const dispatch = useDispatch();
+
   const orders = useSelector((store) => store.adminOrder.orders);
   const isLoading = useSelector((store) => store.adminOrder.isLoading);
+  const error = useSelector((store) => store.adminOrder.error);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getOrders());
+  }, [dispatch]);
 
   const handleClick = (event, index) => {
     const newAnchorE1Array = [...anchorEl];
@@ -92,24 +101,20 @@ const OrdersTable = () => {
     dispatch(deleteOrder(orderId));
   };
 
-  useEffect(() => {
-    dispatch(getOrders());
-  }, [dispatch]);
-
   return isLoading && !orders ? (
     <LoadingText />
   ) : (
     <div className="p-10 pt-0">
       <h1 className="my-2 text-center text-3xl font-normal">All Orders</h1>
       <Card className=" bg-[#1b1b1b]">
-        {orders?.length===0 ? (
+        {orders?.length === 0 && !isLoading ? (
           <EmptyItemsText />
         ) : (
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">Image</TableCell>{" "}
+                  <TableCell align="left">Image</TableCell>
                   <TableCell align="left">ID</TableCell>
                   <TableCell align="left">Title</TableCell>
                   <TableCell align="left">Total Price</TableCell>
@@ -136,11 +141,13 @@ const OrdersTable = () => {
                             ></Avatar>
                           ))}
                         </AvatarGroup>
-                      </TableCell>{" "}
+                      </TableCell>
                       <TableCell align="left">{item.id}</TableCell>
                       <TableCell align="left">
                         {item.orderItems.map((orderItem) => (
-                          <p>{orderItem.product.title}</p>
+                          <p key={orderItem.product.id}>
+                            {orderItem.product.title}
+                          </p>
                         ))}
                       </TableCell>
                       <TableCell align="left">₹{item.totalPrice}</TableCell>
@@ -157,6 +164,7 @@ const OrdersTable = () => {
                       </TableCell>
                       <TableCell align="left">
                         <Button
+                          variant="outlined"
                           id={`basic-button-${item.id}`}
                           aria-controls={`basic-menu-${item.id}`}
                           aria-haspopup="true"
@@ -223,6 +231,9 @@ const OrdersTable = () => {
           </TableContainer>
         )}
       </Card>
+      {error && (
+        <ErrorSnackBar error={error} dispatchType={CLEAR_ORDER_ERROR} />
+      )}
     </div>
   );
 };

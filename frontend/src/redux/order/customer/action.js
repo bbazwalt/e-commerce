@@ -3,6 +3,9 @@ import {
   CREATE_ORDER_FAILURE,
   CREATE_ORDER_REQUEST,
   CREATE_ORDER_SUCCESS,
+  CREATE_PAYMENT_FAILURE,
+  CREATE_PAYMENT_REQUEST,
+  CREATE_PAYMENT_SUCCESS,
   FIND_ORDERS_FAILURE,
   FIND_ORDERS_REQUEST,
   FIND_ORDERS_SUCCESS,
@@ -12,9 +15,6 @@ import {
   GET_USER_ADDRESSES_FAILURE,
   GET_USER_ADDRESSES_REQUEST,
   GET_USER_ADDRESSES_SUCCESS,
-  CREATE_PAYMENT_FAILURE,
-  CREATE_PAYMENT_REQUEST,
-  CREATE_PAYMENT_SUCCESS,
   UPDATE_PAYMENT_FAILURE,
   UPDATE_PAYMENT_REQUEST,
   UPDATE_PAYMENT_SUCCESS,
@@ -40,7 +40,6 @@ export const findOrders = (statuses) => async (dispatch) => {
   dispatch({ type: FIND_ORDERS_REQUEST });
   try {
     const queryString = statuses.join(",");
-
     const { data } = await axios.get(`/orders?statuses=${queryString}`);
     dispatch({ type: FIND_ORDERS_SUCCESS, payload: data });
   } catch (error) {
@@ -51,7 +50,7 @@ export const findOrders = (statuses) => async (dispatch) => {
   }
 };
 
-export const getOrderById = (orderId) => async (dispatch) => {
+export const getOrderById = (orderId, navigate) => async (dispatch) => {
   dispatch({ type: GET_ORDER_BY_ID_REQUEST });
   try {
     const { data } = await axios.get(`/orders/${orderId}`);
@@ -61,29 +60,31 @@ export const getOrderById = (orderId) => async (dispatch) => {
       type: GET_ORDER_BY_ID_FAILURE,
       payload: error?.response?.data?.message,
     });
+    if (navigate) {
+      navigate("/");
+    }
   }
 };
 
-export const getUserAddresses = () => async (dispatch) => {
+export const findUserAddresses = () => async (dispatch) => {
   dispatch({ type: GET_USER_ADDRESSES_REQUEST });
   try {
     const { data } = await axios.get("/users/addresses");
     dispatch({ type: GET_USER_ADDRESSES_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_USER_ADDRESSES_FAILURE, 
+      type: GET_USER_ADDRESSES_FAILURE,
       payload: error?.response?.data?.message,
     });
   }
 };
 
-
 export const createPayment = (orderId) => async (dispatch) => {
   dispatch({ type: CREATE_PAYMENT_REQUEST });
   try {
     const { data } = await axios.post(`/payments/${orderId}`, {});
-    if (data.payment_link_url) {
-      window.location.href = data.payment_link_url;
+    if (data.paymentLinkUrl) {
+      window.location.href = data.paymentLinkUrl;
     }
     dispatch({ type: CREATE_PAYMENT_SUCCESS, payload: data });
   } catch (error) {

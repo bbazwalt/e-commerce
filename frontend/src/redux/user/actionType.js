@@ -12,4 +12,4 @@ export const GET_USER_FAILURE = "GET_USER_FAILURE";
 
 export const SIGN_OUT = "SIGN_OUT";
 
-export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
+export const CLEAR_USER_ERROR = "CLEAR_USER_ERROR";

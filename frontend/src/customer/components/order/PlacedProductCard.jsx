@@ -10,7 +10,7 @@ const PlacedProductCard = ({ item, order }) => {
       sx={{ alignItems: "center", justifyContent: "space-between" }}
     >
       <Grid item xs={6}>
-        <div className="flex items-center ">
+        <div className="flex items-center">
           <img
             className="mx-2 h-[7rem] w-[7rem] object-cover object-top"
             src={item.product.image}

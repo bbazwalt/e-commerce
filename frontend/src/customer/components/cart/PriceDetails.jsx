@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import React from "react";
 
 const PriceDetails = ({
   item,
@@ -33,7 +32,7 @@ const PriceDetails = ({
         onClick={handleCheckout}
         className="w-full"
         variant="contained"
-        sx={{ px: "2rem", py: "1rem", bgcolor: "#1976D2" }}
+        sx={{ px: "2rem", py: "1rem" }}
       >
         CHECKOUT
       </Button>

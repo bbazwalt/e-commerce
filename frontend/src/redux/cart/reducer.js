@@ -1,3 +1,4 @@
+import { SIGN_OUT } from "../user/actionType";
 import {
   ADD_ITEM_TO_CART_FAILURE,
   ADD_ITEM_TO_CART_REQUEST,
@@ -21,7 +22,7 @@ const initialState = {
   error: null,
 };
 
-export const cartReducer = (state = initialState, {type,payload}) => {
+export const cartReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_ITEM_TO_CART_REQUEST:
       return { ...state, isLoading: true, error: null };
@@ -73,7 +74,7 @@ export const cartReducer = (state = initialState, {type,payload}) => {
       return {
         ...state,
         cartItems: state.cartItems.map((item) =>
-          item.id === payload.id ? payload : item
+          item.id === payload.id ? payload : item,
         ),
         error: null,
         isLoading: false,
@@ -89,7 +90,14 @@ export const cartReducer = (state = initialState, {type,payload}) => {
       return {
         ...state,
         error: null,
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
+        cart: null,
+        cartItems: [],
         isLoading: false,
+        error: null,
       };
     default:
       return state;

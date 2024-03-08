@@ -60,3 +60,8 @@ export const singleFilters = [
     ],
   },
 ];
+
+export const sortOptions = [
+  { name: "Price: Low to High", value: "priceLow", current: false },
+  { name: "Price: High to Low", value: "priceHigh", current: false },
+];

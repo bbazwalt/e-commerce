@@ -1,27 +1,27 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import LoadingText from "../../../shared/components/infoText/LoadingText";
 import { getOrderById } from "../../../redux/order/customer/action";
+import { CLEAR_ORDER_ERROR } from "../../../redux/order/customer/actionType";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
+import { scrollToTop } from "../../../utils/utils";
 import CartItem from "../../components/cart/CartItem";
-import OrderTracker from "../../components/order/OrderTracker";
 import AddressCard from "../../components/order/AddressCard";
+import OrderTracker from "../../components/order/OrderTracker";
 
-const statusArr = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
+const statuses = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
 const OrderDetails = ({ order, activeStep }) => {
+  const orderById = useSelector((state) => state.order.order);
+  const isLoading = useSelector((store) => store.order.isLoading);
+  const error = useSelector((store) => store.order.error);
+
   const params = useParams();
   const dispatch = useDispatch();
 
-  const isLoading = useSelector((store) => store.order.isLoading);
-  const orderById = useSelector((state) => state.order.order);
-
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
+    scrollToTop();
   }, []);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const OrderDetails = ({ order, activeStep }) => {
       ) : (
         <div className="flex flex-col items-center justify-center">
           <OrderTracker
-            activeStep={activeStep || statusArr.indexOf(orderById?.orderStatus)}
+            activeStep={activeStep || statuses.indexOf(orderById?.orderStatus)}
           />
           <div className="mt-10 w-full rounded-s-md border p-5 shadow-lg">
             <AddressCard
@@ -50,6 +50,9 @@ const OrderDetails = ({ order, activeStep }) => {
             ))}
           </div>
         </div>
+      )}
+      {error && (
+        <ErrorSnackBar error={error} dispatchType={CLEAR_ORDER_ERROR} />
       )}
     </div>
   );

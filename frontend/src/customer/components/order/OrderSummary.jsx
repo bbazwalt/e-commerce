@@ -1,19 +1,27 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { bypassPayment, createPayment, getOrderById } from "../../../redux/order/customer/action";
-import AddressCard from "./AddressCard";
+import {
+  bypassPayment,
+  createPayment,
+  getOrderById,
+} from "../../../redux/order/customer/action";
 import CartItem from "../cart/CartItem";
 import PriceDetails from "../cart/PriceDetails";
+import AddressCard from "./AddressCard";
 
 const OrderSummary = () => {
-  const dispatch = useDispatch();
-  const location = useLocation();
   const order = useSelector((store) => store.order.order);
-  const searchParams = new URLSearchParams(location.search);
 
-  const orderId = searchParams.get("orderId");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const orderId = searchParams.get("orderId");
+
+  useEffect(() => {
+    dispatch(getOrderById(orderId));
+  }, [orderId]);
 
   const handleCheckout = () => {
     dispatch(createPayment(orderId));
@@ -22,10 +30,6 @@ const OrderSummary = () => {
   const handleBypassPayment = () => {
     dispatch(bypassPayment(orderId, navigate));
   };
-
-  useEffect(() => {
-    dispatch(getOrderById(orderId));
-  }, [orderId]);
 
   return (
     <div>

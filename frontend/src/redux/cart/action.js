@@ -17,22 +17,28 @@ import {
 export const getCart = () => async (dispatch) => {
   dispatch({ type: GET_CART_REQUEST });
   try {
-    const { data } = await axios.get(`/cart`);
+    const { data } = await axios.get("/cart");
     dispatch({ type: GET_CART_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_CART_FAILURE, payload: error?.response?.data?.message });
+    dispatch({
+      type: GET_CART_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
 export const addItemToCart = (reqData) => async (dispatch) => {
   dispatch({ type: ADD_ITEM_TO_CART_REQUEST });
   try {
-    const { data } = await axios.post(`/cart`, reqData);
+    const { data } = await axios.post("/cart", reqData);
     dispatch({ type: ADD_ITEM_TO_CART_SUCCESS, payload: data });
     dispatch(getCart());
     dispatch(reqData.navigate("/cart"));
   } catch (error) {
-    dispatch({ type: ADD_ITEM_TO_CART_FAILURE, payload: error?.response?.data?.message });
+    dispatch({
+      type: ADD_ITEM_TO_CART_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
 
@@ -41,15 +47,18 @@ export const updateCartItem = (reqData) => async (dispatch) => {
   try {
     const { data } = await axios.put(
       `/cart-items/${reqData.cartItemId}`,
-      reqData.data
+      reqData.data,
     );
     dispatch(getCart());
     dispatch({ type: UPDATE_CART_ITEM_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: UPDATE_CART_ITEM_FAILURE, payload: error?.response?.data?.message });
+    dispatch({
+      type: UPDATE_CART_ITEM_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };
- 
+
 export const removeCartItem = (cartItemId) => async (dispatch) => {
   dispatch({ type: REMOVE_CART_ITEM_REQUEST });
   try {
@@ -57,6 +66,9 @@ export const removeCartItem = (cartItemId) => async (dispatch) => {
     dispatch(getCart());
     dispatch({ type: REMOVE_CART_ITEM_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: REMOVE_CART_ITEM_FAILURE, payload: error?.response?.data?.message });
+    dispatch({
+      type: REMOVE_CART_ITEM_FAILURE,
+      payload: error?.response?.data?.message,
+    });
   }
 };

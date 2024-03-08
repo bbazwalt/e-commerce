@@ -16,28 +16,15 @@ const style = {
 
 const AuthModal = ({ handleAuthClose, setIsSignIn, isSignIn, openAuth }) => {
   return (
-    <div>
-      <Modal
-        open={openAuth}
-        onClose={handleAuthClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          {isSignIn ? (
-            <SignIn
-              handleAuthClose={handleAuthClose}
-              setIsSignIn={setIsSignIn}
-            />
-          ) : (
-            <SignUp
-              handleAuthClose={handleAuthClose}
-              setIsSignIn={setIsSignIn}
-            />
-          )}
-        </Box>
-      </Modal>
-    </div>
+    <Modal open={openAuth} onClose={handleAuthClose}>
+      <Box sx={style}>
+        {isSignIn ? (
+          <SignIn handleAuthClose={handleAuthClose} setIsSignIn={setIsSignIn} />
+        ) : (
+          <SignUp handleAuthClose={handleAuthClose} setIsSignIn={setIsSignIn} />
+        )}
+      </Box>
+    </Modal>
   );
 };
 

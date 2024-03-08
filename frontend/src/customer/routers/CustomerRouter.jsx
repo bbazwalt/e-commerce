@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useAuth } from "../../redux/auth/authContext";
+import { useAuth } from "../../redux/user/authContext";
 import Footer from "../components/footer/Footer";
 import Navigation from "../components/navigation/Navigation";
 import Cart from "../pages/cart/Cart";
@@ -10,6 +10,7 @@ import OrderDetails from "../pages/order/OrderDetails";
 import PaymentSuccess from "../pages/order/PaymentSuccess";
 import Product from "../pages/product/Product";
 import ProductDetails from "../pages/product/ProductDetails";
+
 const CustomerRouter = () => {
   const { auth } = useAuth();
 
@@ -68,7 +69,6 @@ const CustomerRouter = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-
       <Footer />
     </div>
   );

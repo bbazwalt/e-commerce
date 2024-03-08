@@ -9,14 +9,13 @@ const ProductCard = ({ product }) => {
       onClick={() => navigate(`/product/${product.id}`)}
       className="product-card  m-8 mb-16 mt-0 h-[20rem] w-[16rem] cursor-pointer transition-all"
     >
-      <div className="">
+      <div>
         <img
           className="w-fit-content h-fit-content h-full w-full object-cover object-left-top"
           src={product.image}
           alt={product.title}
         ></img>
       </div>
-
       <div className="text-part bg-white p-3">
         <div>
           <p className="font-bold opacity-60">{product.brand}</p>

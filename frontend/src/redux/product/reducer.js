@@ -1,42 +1,48 @@
 import {
   CLEAR_PRODUCT_ERROR,
   CLEAR_PRODUCT_MESSAGE,
+  CREATE_CATEGORY_FAILURE,
+  CREATE_CATEGORY_REQUEST,
+  CREATE_CATEGORY_SUCCESS,
   CREATE_PRODUCT_FAILURE,
   CREATE_PRODUCT_REQUEST,
   CREATE_PRODUCT_SUCCESS,
   DELETE_PRODUCT_FAILURE,
   DELETE_PRODUCT_REQUEST,
   DELETE_PRODUCT_SUCCESS,
+  FIND_ALL_CATEGORIES_FAILURE,
+  FIND_ALL_CATEGORIES_REQUEST,
+  FIND_ALL_CATEGORIES_SUCCESS,
+  FIND_ALL_PRODUCTS_FAILURE,
+  FIND_ALL_PRODUCTS_REQUEST,
+  FIND_ALL_PRODUCTS_SUCCESS,
   FIND_PRODUCTS_FAILURE,
   FIND_PRODUCTS_REQUEST,
   FIND_PRODUCTS_SUCCESS,
   FIND_PRODUCT_BY_ID_FAILURE,
   FIND_PRODUCT_BY_ID_REQUEST,
   FIND_PRODUCT_BY_ID_SUCCESS,
-  GET_ALL_PRODUCTS_FAILURE,
-  GET_ALL_PRODUCTS_REQUEST,
-  GET_ALL_PRODUCTS_SUCCESS,
 } from "./actionType";
 
 const initialState = {
   products: [],
   product: null,
   productsByCategory: {},
+  categories: [],
   isLoading: false,
   error: null,
   message: null,
 };
 
-export const productReducer = (
-  state = initialState,
-  { type, payload },
-) => {
+export const productReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case FIND_PRODUCTS_REQUEST:
     case FIND_PRODUCT_BY_ID_REQUEST:
-    case GET_ALL_PRODUCTS_REQUEST:
+    case FIND_ALL_PRODUCTS_REQUEST:
     case CREATE_PRODUCT_REQUEST:
     case DELETE_PRODUCT_REQUEST:
+    case CREATE_CATEGORY_REQUEST:
+    case FIND_ALL_CATEGORIES_REQUEST:
       return { ...state, isLoading: true, error: null, message: null };
     case FIND_PRODUCTS_SUCCESS:
       const { category, data } = payload;
@@ -56,7 +62,7 @@ export const productReducer = (
         ...state,
         isLoading: false,
         error: null,
-        message: "Product created successfully",
+        message: "Product created successfully.",
       };
     case FIND_PRODUCT_BY_ID_SUCCESS:
       return {
@@ -66,7 +72,7 @@ export const productReducer = (
         message: null,
         product: payload,
       };
-    case GET_ALL_PRODUCTS_SUCCESS:
+    case FIND_ALL_PRODUCTS_SUCCESS:
       return {
         ...state,
         isLoading: false,
@@ -82,12 +88,29 @@ export const productReducer = (
         message: null,
         products: state.products.filter((item) => item.id !== payload),
       };
-
+    case CREATE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        message: "Category created successfully.",
+        categories: [...state.categories, payload],
+      };
+    case FIND_ALL_CATEGORIES_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        message: null,
+        categories: payload,
+      };
     case FIND_PRODUCTS_FAILURE:
     case FIND_PRODUCT_BY_ID_FAILURE:
-    case GET_ALL_PRODUCTS_FAILURE:
+    case FIND_ALL_PRODUCTS_FAILURE:
     case CREATE_PRODUCT_FAILURE:
     case DELETE_PRODUCT_FAILURE:
+    case CREATE_CATEGORY_FAILURE:
+    case FIND_ALL_CATEGORIES_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -103,7 +126,6 @@ export const productReducer = (
       return {
         ...state,
         error: null,
-        isLoading: false,
       };
     default:
       return state;

@@ -5,14 +5,14 @@ import NextButton from "./NextButton";
 import PrevButton from "./PrevButton";
 import SectionCard from "./SectionCard";
 
+const responsive = {
+  0: { items: 1 },
+  720: { items: 3 },
+  1280: { items: 4 },
+};
+
 const SectionCarousel = ({ data, sectionName }) => {
   const isLoading = useSelector((store) => store.product.isLoading);
-
-  const responsive = {
-    0: { items: 1 },
-    720: { items: 3 },
-    1280: { items: 4 },
-  };
 
   const items = data.map((item) => <SectionCard product={item} />);
 

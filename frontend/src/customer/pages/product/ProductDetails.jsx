@@ -2,47 +2,40 @@ import { Button } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingText from "../../../shared/components/infoText/LoadingText";
-import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
 import { addItemToCart } from "../../../redux/cart/action";
 import { findProductById } from "../../../redux/product/action";
 import { CLEAR_PRODUCT_ERROR } from "../../../redux/product/actionType";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
+import { scrollToTop } from "../../../utils/utils";
 import SectionCard from "../../components/home/carousel/section/SectionCard";
 
 const ProductDetails = () => {
+  const user = useSelector((store) => store.user.user);
+  const product = useSelector((store) => store.product.product);
   const productsByCategory = useSelector(
     (store) => store.product.productsByCategory,
   );
-
-  const product = useSelector((store) => store.product.product);
-  const user = useSelector((store) => store.auth.user);
   const isLoading = useSelector((store) => store.product.isLoading);
   const error = useSelector((store) => store.product.error);
 
-  const categoryArr = [product?.category?.parentCategory, product?.category];
+  const categories = [product?.category?.parentCategory, product?.category];
 
   const dispatch = useDispatch();
-  const params = useParams();
   const navigate = useNavigate();
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  const params = useParams();
 
   useEffect(() => {
     scrollToTop();
   }, []);
 
-  const handleAddToCart = () => {
-    dispatch(addItemToCart({ productId: product?.id, navigate }));
-  };
-
   useEffect(() => {
     dispatch(findProductById(params.productId));
   }, [params.productId]);
+
+  const handleAddToCart = () => {
+    dispatch(addItemToCart({ productId: product?.id, navigate }));
+  };
 
   return (
     <div className="bg-white px-20">
@@ -53,7 +46,7 @@ const ProductDetails = () => {
           <>
             <nav aria-label="Breadcrumb">
               <ol className="mx-auto flex max-w-7xl items-center space-x-2 px-8">
-                {categoryArr?.map((category) => (
+                {categories?.map((category) => (
                   <li key={category?.id}>
                     <div
                       className="flex items-center"
@@ -63,13 +56,13 @@ const ProductDetails = () => {
                     >
                       <div
                         onClick={() =>
-                          category?.name === categoryArr[1]?.name &&
+                          category?.name === categories[1]?.name &&
                           navigate(
-                            `/${categoryArr[0]?.name}/${categoryArr[1]?.name}`,
+                            `/${categories[0]?.name}/${categories[1]?.name}`,
                           )
                         }
                         className={`${
-                          category?.name === categoryArr[1]?.name &&
+                          category?.name === categories[1]?.name &&
                           "cursor-pointer"
                         } mr-2 text-sm font-medium text-gray-900`}
                       >
@@ -108,7 +101,6 @@ const ProductDetails = () => {
                   />
                 </div>
               </div>
-
               <div className="col-span-1 mx-auto max-w-xl px-8 pb-24">
                 <div className="col-span-2 ">
                   <h1 className="text-2xl font-bold text-gray-500">
@@ -118,10 +110,8 @@ const ProductDetails = () => {
                     {product?.title}
                   </h1>
                 </div>
-
                 <div className="row-span-3 mt-0">
                   <h2 className="sr-only">Product Information</h2>
-
                   <div className="mt-6 flex items-center space-x-5 text-xl text-gray-900 ">
                     <p className="font-semibold">₹{product?.discountedPrice}</p>
                     <p className="line-through opacity-50">₹{product?.price}</p>
@@ -129,7 +119,6 @@ const ProductDetails = () => {
                       {product?.discountPercent}% off
                     </p>
                   </div>
-
                   <div className="flex flex-row space-x-12">
                     <h2 className="mt-8 text-xl font-semibold text-gray-900">
                       Color:
@@ -150,7 +139,6 @@ const ProductDetails = () => {
                       </span>
                     </h2>
                   </div>
-
                   {user && (
                     <Button
                       onClick={handleAddToCart}
@@ -160,14 +148,12 @@ const ProductDetails = () => {
                         mt: "2rem",
                         px: "2rem",
                         py: "1rem",
-                        bgcolor: "#1976D2",
                       }}
                     >
                       ADD TO CART
                     </Button>
                   )}
                 </div>
-
                 <div className="col-span-2 col-start-1  mt-4 items-end border-gray-200 py-6 pr-8">
                   <div>
                     <div className="space-y-6">
@@ -190,6 +176,7 @@ const ProductDetails = () => {
                       (item) =>
                         item?.id !== product?.id && (
                           <SectionCard
+                            key={item.id}
                             scrollToTop={scrollToTop}
                             product={item}
                           />

@@ -1,5 +1,5 @@
 import {
-  CLEAR_AUTH_ERROR,
+  CLEAR_USER_ERROR,
   GET_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -18,7 +18,7 @@ const initialState = {
   error: null,
 };
 
-export const authReducer = (state = initialState, { type, payload }) => {
+export const userReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SIGN_UP_REQUEST:
     case SIGN_IN_REQUEST:
@@ -33,10 +33,10 @@ export const authReducer = (state = initialState, { type, payload }) => {
     case SIGN_IN_FAILURE:
     case GET_USER_FAILURE:
       return { ...state, isLoading: false, error: payload };
+    case CLEAR_USER_ERROR:
+      return { ...state, error: null };
     case SIGN_OUT:
-      return { ...state, user: null, error: null, isLoading: false };
-    case CLEAR_AUTH_ERROR:
-      return { ...state, isLoading: false, error: null };
+      return { ...state, user: null, isLoading: false, error: null };
     default:
       return state;
   }

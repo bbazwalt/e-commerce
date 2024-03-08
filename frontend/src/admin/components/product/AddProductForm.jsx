@@ -8,49 +8,131 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct } from "../../../redux/product/action";
+import * as Yup from "yup";
+import {
+  createProduct,
+  findAllCategories,
+} from "../../../redux/product/action";
 import { CLEAR_PRODUCT_MESSAGE } from "../../../redux/product/actionType";
+import { toTitleCaseForHyphen } from "../../../utils/utils";
+
+const validationSchema = Yup.object({
+  image: Yup.string().trim().strict(true).required("Image URL is required."),
+  brand: Yup.string().trim().strict(true).required("Brand is required."),
+  title: Yup.string().trim().strict(true).required("Title is required."),
+  description: Yup.string()
+    .trim()
+    .strict(true)
+    .required("Description is required."),
+  color: Yup.string().trim().strict(true).required("Color is required."),
+  storage: Yup.string().trim().strict(true).required("Storage is required."),
+  memory: Yup.string().trim().strict(true).required("Memory is required."),
+  price: Yup.number()
+    .min(0, "Price must be zero or positive.")
+    .required("Price is required."),
+  discountedPrice: Yup.number()
+    .min(0, "Discounted price must be zero or positive.")
+    .required("Discounted price is required."),
+  discountPercent: Yup.number()
+    .min(0, "Discount percent must be zero or positive.")
+    .max(100, "Discount percent cannot be more than 100.")
+    .required("Discount percent is required."),
+  quantity: Yup.number()
+    .min(0, "Quantity must be zero or positive.")
+    .required("Quantity is required."),
+  firstLevelCategory: Yup.string()
+    .trim()
+    .required("First level category is required."),
+  secondLevelCategory: Yup.string()
+    .trim()
+    .required("Second level category is required."),
+  thirdLevelCategory: Yup.string()
+    .trim()
+    .required("Third level category is required."),
+});
 
 const AddProductForm = () => {
-  const [productData, setProductData] = useState({
-    image: "",
-    brand: "",
-    title: "",
-    description: "",
-    color: "",
-    storage: "",
-    memory: "",
-    price: 0,
-    discountedPrice: 0,
-    discountPercent: 0,
-    quantity: 0,
-    topLevelCategory: "",
-    secondLevelCategory: "",
-    thirdLevelCategory: "",
-  });
+  const [secondLevelCategories, setSecondLevelCategories] = useState([]);
+  const [thirdLevelCategories, setThirdLevelCategories] = useState([]);
+
+  const categories = useSelector((store) => store.product.categories);
+  const message = useSelector((store) => store.product.message);
+  const isLoading = useSelector((store) => store.product.isLoading);
 
   const dispatch = useDispatch();
 
-  const message = useSelector((store) => store.product.message);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProductData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createProduct(productData));
-  };
+  useEffect(() => {
+    dispatch(findAllCategories());
+  }, []);
 
   const handleOnClick = () => {
     dispatch({ type: CLEAR_PRODUCT_MESSAGE });
   };
+
+  const handleFirstLevelChange = (event) => {
+    const { value } = event.target;
+    formik.setFieldValue("firstLevelCategory", value);
+    formik.setFieldValue("secondLevelCategory", "");
+    formik.setFieldValue("thirdLevelCategory", "");
+    const filteredCategories = categories.filter(
+      (category) =>
+        category.parentCategory && category.parentCategory.id === value,
+    );
+    setSecondLevelCategories(filteredCategories);
+    setThirdLevelCategories([]);
+  };
+
+  const handleSecondLevelChange = (event) => {
+    const { value } = event.target;
+    formik.setFieldValue("secondLevelCategory", value);
+    formik.setFieldValue("thirdLevelCategory", "");
+    const filteredCategories = categories.filter(
+      (category) =>
+        category.parentCategory && category.parentCategory.id === value,
+    );
+    setThirdLevelCategories(filteredCategories);
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      image: "",
+      brand: "",
+      title: "",
+      description: "",
+      color: "",
+      storage: "",
+      memory: "",
+      price: 0,
+      discountedPrice: 0,
+      discountPercent: 0,
+      quantity: 0,
+      firstLevelCategory: "",
+      secondLevelCategory: "",
+      thirdLevelCategory: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      const trimmedValues = Object.keys(values).reduce((acc, key) => {
+        acc[key] =
+          typeof values[key] === "string" ? values[key].trim() : values[key];
+        return acc;
+      }, {});
+      const finalValues = {
+        ...trimmedValues,
+        firstLevelCategory: categories.find(
+          (category) => category.id === formik.values.firstLevelCategory,
+        )?.name,
+        secondLevelCategory: categories.find(
+          (category) => category.id === formik.values.secondLevelCategory,
+        )?.name,
+      };
+      dispatch(createProduct(finalValues));
+      formik.resetForm();
+    },
+  });
 
   return (
     <div className="p-10 pt-0" onClick={handleOnClick}>
@@ -61,7 +143,7 @@ const AddProductForm = () => {
       >
         Add Product
       </Typography>
-      <form onSubmit={handleSubmit} className=" max-h-[20rem]">
+      <form onSubmit={formik.handleSubmit} className=" max-h-[20rem]">
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -69,8 +151,12 @@ const AddProductForm = () => {
               fullWidth
               label="Image URL"
               name="image"
-              value={productData.image}
-              onChange={handleChange}
+              id="image"
+              value={formik.values.image}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.image && Boolean(formik.errors.image)}
+              helperText={formik.touched.image && formik.errors.image}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -79,8 +165,12 @@ const AddProductForm = () => {
               fullWidth
               label="Brand"
               name="brand"
-              value={productData.brand}
-              onChange={handleChange}
+              id="brand"
+              value={formik.values.brand}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.brand && Boolean(formik.errors.brand)}
+              helperText={formik.touched.brand && formik.errors.brand}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -89,8 +179,12 @@ const AddProductForm = () => {
               fullWidth
               label="Title"
               name="title"
-              value={productData.title}
-              onChange={handleChange}
+              id="title"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              helperText={formik.touched.title && formik.errors.title}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -99,8 +193,12 @@ const AddProductForm = () => {
               fullWidth
               label="Color"
               name="color"
-              value={productData.color}
-              onChange={handleChange}
+              id="color"
+              value={formik.values.color}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.color && Boolean(formik.errors.color)}
+              helperText={formik.touched.color && formik.errors.color}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -109,8 +207,12 @@ const AddProductForm = () => {
               fullWidth
               label="Storage"
               name="storage"
-              value={productData.storage}
-              onChange={handleChange}
+              id="storage"
+              value={formik.values.storage}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.storage && Boolean(formik.errors.storage)}
+              helperText={formik.touched.storage && formik.errors.storage}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -119,8 +221,12 @@ const AddProductForm = () => {
               fullWidth
               label="Memory"
               name="memory"
-              value={productData.memory}
-              onChange={handleChange}
+              id="memory"
+              value={formik.values.memory}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.memory && Boolean(formik.errors.memory)}
+              helperText={formik.touched.memory && formik.errors.memory}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -129,8 +235,12 @@ const AddProductForm = () => {
               fullWidth
               label="Quantity"
               name="quantity"
-              value={productData.quantity}
-              onChange={handleChange}
+              id="quantity"
+              value={formik.values.quantity}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.quantity && Boolean(formik.errors.quantity)}
+              helperText={formik.touched.quantity && formik.errors.quantity}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -139,8 +249,12 @@ const AddProductForm = () => {
               fullWidth
               label="Price"
               name="price"
-              value={productData.price}
-              onChange={handleChange}
+              id="price"
+              value={formik.values.price}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.price && Boolean(formik.errors.price)}
+              helperText={formik.touched.price && formik.errors.price}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -149,8 +263,17 @@ const AddProductForm = () => {
               fullWidth
               label="Discounted Price"
               name="discountedPrice"
-              value={productData.discountedPrice}
-              onChange={handleChange}
+              id="discountedPrice"
+              value={formik.values.discountedPrice}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.discountedPrice &&
+                Boolean(formik.errors.discountedPrice)
+              }
+              helperText={
+                formik.touched.discountedPrice && formik.errors.discountedPrice
+              }
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -159,21 +282,37 @@ const AddProductForm = () => {
               fullWidth
               label="Discount Percent"
               name="discountPercent"
-              value={productData.discountPercent}
-              onChange={handleChange}
+              id="discountPercent"
+              value={formik.values.discountPercent}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.discountPercent &&
+                Boolean(formik.errors.discountPercent)
+              }
+              helperText={
+                formik.touched.discountPercent && formik.errors.discountPercent
+              }
             />
           </Grid>
           <Grid item xs={6} sm={4}>
             <FormControl fullWidth required>
-              <InputLabel>Top Level Category</InputLabel>
+              <InputLabel>First Level Category</InputLabel>
               <Select
-                name="topLevelCategory"
-                value={productData.topLevelCategory}
-                onChange={handleChange}
-                label="Top Level Category"
+                name="firstLevelCategory"
+                value={formik.values.firstLevelCategory}
+                onChange={handleFirstLevelChange}
+                label="First Level Category"
               >
-                <MenuItem value="electronics">Electronics</MenuItem>
-                <MenuItem value="others">Others</MenuItem>
+                {categories?.map((item) => {
+                  return (
+                    item.level === 1 && (
+                      <MenuItem key={item.id} value={item.id}>
+                        {toTitleCaseForHyphen(item.name)}
+                      </MenuItem>
+                    )
+                  );
+                })}
               </Select>
             </FormControl>
           </Grid>
@@ -182,12 +321,15 @@ const AddProductForm = () => {
               <InputLabel>Second Level Category</InputLabel>
               <Select
                 name="secondLevelCategory"
-                value={productData.secondLevelCategory}
-                onChange={handleChange}
+                value={formik.values.secondLevelCategory}
+                onChange={handleSecondLevelChange}
                 label="Second Level Category"
               >
-                <MenuItem value="smartphones">Smartphones</MenuItem>
-                <MenuItem value="others">Others</MenuItem>
+                {secondLevelCategories.map((item) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {toTitleCaseForHyphen(item.name)}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -196,13 +338,15 @@ const AddProductForm = () => {
               <InputLabel>Third Level Category</InputLabel>
               <Select
                 name="thirdLevelCategory"
-                value={productData.thirdLevelCategory}
-                onChange={handleChange}
+                value={formik.values.thirdLevelCategory}
+                onChange={formik.handleChange}
                 label="Third Level Category"
               >
-                <MenuItem value="galaxy-z-series">Galaxy Z Series</MenuItem>
-                <MenuItem value="galaxy-s-series">Galaxy S Series</MenuItem>
-                <MenuItem value="galaxy-a-series">Galaxy A Series</MenuItem>
+                {thirdLevelCategories.map((item) => (
+                  <MenuItem key={item.id} value={item.name}>
+                    {toTitleCaseForHyphen(item.name)}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -215,8 +359,15 @@ const AddProductForm = () => {
               name="description"
               multiline
               rows={3}
-              value={productData.description}
-              onChange={handleChange}
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.description && Boolean(formik.errors.description)
+              }
+              helperText={
+                formik.touched.description && formik.errors.description
+              }
             />
           </Grid>
           {message && (
@@ -236,6 +387,7 @@ const AddProductForm = () => {
           <Grid item xs={12}>
             <div className="flex items-center justify-center">
               <Button
+                disabled={isLoading}
                 variant="contained"
                 sx={{ p: 1.8 }}
                 className="py-20"

@@ -5,33 +5,33 @@ import { Fragment, useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { getCart } from "../../../redux/cart/action";
+import { signOut } from "../../../redux/user/action";
+import { useAuth } from "../../../redux/user/authContext";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { signOut } from "../../../redux/auth/action";
-import { useAuth } from "../../../redux/auth/authContext";
+import { classNames } from "../../../utils/utils";
 import { mainLogo } from "../../data/image/imageData";
 import { navigationData } from "../../data/navigation/navigationData";
 import AuthModal from "../auth/AuthModal";
 import "./../../../styles/product/ProductCard.css";
-
-const classNames = (...classes) => {
-  return classes.filter(Boolean).join(" ");
-};
 
 const Navigation = () => {
   const [openAuth, setOpenAuth] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const openMenu = Boolean(anchorEl);
-
-  const isLoading = useSelector((store) => store.auth.isLoading);
-  const user = useSelector((store) => store.auth.user);
+  const isLoading = useSelector((store) => store.user.isLoading);
+  const user = useSelector((store) => store.user.user);
   const cart = useSelector((store) => store.cart);
 
   const { authSignOut } = useAuth();
-
+  const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getCart());
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -101,7 +101,6 @@ const Navigation = () => {
                   <img className="h-6 w-6" src={mainLogo} alt="Main Logo" />
                 </Link>
               </div>
-
               <Popover.Group className="ml-8 block self-stretch ">
                 <div className="flex h-full space-x-8">
                   {navigationData.categories.map((category) => (
@@ -120,7 +119,6 @@ const Navigation = () => {
                               {category.name}
                             </Popover.Button>
                           </div>
-
                           <Transition
                             as={Fragment}
                             enter="transition ease-out duration-200"
@@ -135,7 +133,6 @@ const Navigation = () => {
                                 className="absolute inset-0 top-1/2 bg-white shadow"
                                 aria-hidden="true"
                               />
-
                               <div className="relative bg-white">
                                 <div className="mx-auto max-w-7xl px-8">
                                   <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
@@ -174,11 +171,7 @@ const Navigation = () => {
                                         </div>
                                       ))}
                                     </div>
-                                    <div
-                                      className={`row-start-1 grid grid-cols-${
-                                        category.id === "tablets" ? 2 : 3
-                                      } gap-x-8 gap-y-10 text-sm`}
-                                    >
+                                    <div className="row-start-1 grid grid-cols-3 gap-x-8 gap-y-10 text-sm">
                                       {category.sections.map((section) => (
                                         <div key={section.name}>
                                           <p
@@ -231,7 +224,6 @@ const Navigation = () => {
                   ))}
                 </div>
               </Popover.Group>
-
               {isLoading ? (
                 <div className="mb-4 ml-auto">
                   <LoadingText />
@@ -246,7 +238,6 @@ const Navigation = () => {
                       >
                         Sign In
                       </div>
-
                       <div
                         onClick={() => handleAuthOpen(false)}
                         className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
@@ -266,7 +257,6 @@ const Navigation = () => {
                       >
                         {user.fullName}
                       </div>
-
                       <div
                         onClick={handleCartClick}
                         className="group flex items-center py-2"
@@ -325,7 +315,6 @@ const Navigation = () => {
                           Sign Out
                         </MenuItem>
                       )}
-
                       <MenuItem
                         sx={{
                           fontSize: "0.875rem",
@@ -335,7 +324,6 @@ const Navigation = () => {
                         }}
                         onClick={() => {
                           handleClose();
-
                           navigate("/admin");
                         }}
                       >

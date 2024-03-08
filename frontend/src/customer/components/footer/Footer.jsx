@@ -1,46 +1,39 @@
 import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { scrollToTop } from "../../../utils/utils";
 
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   return (
-    <div className="bottom-0 mb-0 mt-10 pb-0 ">
-      <div className="flex flex-col items-center bg-black text-center  text-white">
+    <footer className="bottom-0 mb-0 mt-10 pb-0 ">
+      <div className="flex flex-col items-center bg-black text-center text-white">
         <div className=" mt-10 flex flex-row justify-center space-x-20">
-          <div>
-            <Typography className="pb-5 " variant="h6">
-              Smartphones
-            </Typography>
-            <div>
-              <Link to={"/smartphones/galaxy-z-series"}>
-                <div onClick={scrollToTop} className="pb-5 hover:text-gray-300">
-                  Galaxy Z Series
-                </div>
-              </Link>
+          <Typography className="pb-5 " variant="h6">
+            Smartphones
+          </Typography>
+          <Link to={"/smartphones/galaxy-z-series"}>
+            <div
+              onClick={scrollToTop}
+              className="pb-5 pt-1 hover:text-gray-300"
+            >
+              Galaxy Z Series
             </div>
-
-            <div>
-              <Link to={"/smartphones/galaxy-s-series"}>
-                <div onClick={scrollToTop} className="pb-5 hover:text-gray-300">
-                  Galaxy S Series
-                </div>
-              </Link>
+          </Link>
+          <Link to={"/smartphones/galaxy-s-series"}>
+            <div
+              onClick={scrollToTop}
+              className="pb-5 pt-1 hover:text-gray-300"
+            >
+              Galaxy S Series
             </div>
-
-            <div>
-              <Link to={"/smartphones/galaxy-a-series"}>
-                <div onClick={scrollToTop} className="pb-5 hover:text-gray-300">
-                  Galaxy A Series
-                </div>
-              </Link>
+          </Link>
+          <Link to={"/smartphones/galaxy-a-series"}>
+            <div
+              onClick={scrollToTop}
+              className="pb-5 pt-1 hover:text-gray-300"
+            >
+              Galaxy A Series
             </div>
-          </div>
+          </Link>
         </div>
         <div className="flex flex-row items-center justify-center py-8">
           <p className="my-2">
@@ -52,7 +45,7 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
 

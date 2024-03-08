@@ -34,11 +34,9 @@ export const signUp = (reqData, authSignIn) => async (dispatch) => {
 
 export const signIn = (reqData, authSignIn) => async (dispatch) => {
   dispatch({ type: SIGN_IN_REQUEST });
-
   try {
     axios.defaults.baseURL = AUTH_API_BASE_URL;
-    const { data } = await axios.post(`/signin`, reqData);
-
+    const { data } = await axios.post("/signin", reqData);
     if (data.token) {
       authSignIn(data.token, data.admin);
     }
@@ -53,10 +51,10 @@ export const signIn = (reqData, authSignIn) => async (dispatch) => {
   }
 };
 
-export const currentUser = (authSignout) => async (dispatch) => {
+export const currentUser = (authSignOut) => async (dispatch) => {
   dispatch({ type: GET_USER_REQUEST });
   try {
-    const { data } = await axios.get(`/users/profile`);
+    const { data } = await axios.get("/users/profile");
     dispatch({ type: GET_USER_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -64,7 +62,7 @@ export const currentUser = (authSignout) => async (dispatch) => {
       payload: error?.response?.data?.message,
     });
     if (error?.response?.data?.status === false) {
-      dispatch(signOut(authSignout));
+      dispatch(signOut(authSignOut));
     }
   }
 };

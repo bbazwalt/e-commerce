@@ -5,6 +5,7 @@ import { removeCartItem, updateCartItem } from "../../../redux/cart/action";
 
 const CartItem = ({ item, isSummary }) => {
   const dispatch = useDispatch();
+
   const handleUpdateCartItem = (num) => {
     const data = {
       data: { quantity: item?.quantity + num },
@@ -20,7 +21,7 @@ const CartItem = ({ item, isSummary }) => {
   return (
     <div className="rounded-md border p-5 shadow-lg">
       <div className="flex items-center">
-        <div className=" h-[9rem] w-[9rem]">
+        <div className="h-[9rem] w-[9rem]">
           <img
             className="h-full w-full object-cover object-top"
             src={item?.product?.image}
@@ -42,7 +43,6 @@ const CartItem = ({ item, isSummary }) => {
             Memory:
             <span className="text-gray-500">{" " + item?.product?.memory}</span>
           </p>
-
           <div className="flex items-center space-x-2 text-gray-900 ">
             <p className="font-semibold">₹{item?.discountedPrice}</p>
             <p className="line-through opacity-50">₹{item?.price}</p>
@@ -82,7 +82,6 @@ const CartItem = ({ item, isSummary }) => {
             </IconButton>
           )}
         </div>
-
         {!isSummary && (
           <div>
             <Button

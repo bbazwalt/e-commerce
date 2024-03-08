@@ -1,12 +1,13 @@
 import { Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import LoadingText from "../../../shared/components/infoText/LoadingText";
 import { findOrders } from "../../../redux/order/customer/action";
-import OrderCard from "../../components/order/OrderCard";
-import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
 import { CLEAR_ORDER_ERROR } from "../../../redux/order/customer/actionType";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
+import { scrollToTop } from "../../../utils/utils";
+import OrderCard from "../../components/order/OrderCard";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
@@ -16,9 +17,8 @@ const orderStatus = [
   { label: "Shipped", value: "SHIPPED" },
   { label: "Delivered", value: "DELIVERED" },
 ];
+
 const Order = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [newSelectedStatus, setNewSelectedStatus] = useState([]);
 
@@ -26,18 +26,18 @@ const Order = () => {
   const isLoading = useSelector((store) => store.order.isLoading);
   const error = useSelector((store) => store.order.error);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleFilter = (status) => {
     const currentIndex = selectedStatus.indexOf(status);
     const newSelectedStatus = [...selectedStatus];
-
     if (currentIndex === -1) {
       newSelectedStatus.push(status);
     } else {
       newSelectedStatus.splice(currentIndex, 1);
     }
-
     setSelectedStatus(newSelectedStatus);
-
     const searchParams = new URLSearchParams();
     if (newSelectedStatus.length > 0) {
       searchParams.set("status", newSelectedStatus.join(","));
@@ -47,23 +47,20 @@ const Order = () => {
   };
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
+    scrollToTop();
   }, []);
 
   useEffect(() => {
     dispatch(findOrders(newSelectedStatus));
   }, [newSelectedStatus]);
 
-  window.addEventListener("load",  ()=> {
+  window.addEventListener("load", () => {
     if (window.location.search) {
       // eslint-disable-next-line no-restricted-globals
       history.replaceState(null, "", window.location.pathname);
     }
   });
+
   return (
     <div className="mx-auto mt-10 max-w-[76rem]">
       <Grid container sx={{ justifyContent: "space-between" }}>
@@ -77,11 +74,12 @@ const Order = () => {
                   <input
                     onChange={() => handleFilter(option.value)}
                     type="checkbox"
-                    className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                    id={option.value}
+                    className="h-4 w-4 cursor-pointer border-gray-300 text-blue-600 focus:ring-blue-500"
                     checked={selectedStatus.includes(option.value)}
                   />
                   <label
-                    className="ml-3 text-sm text-gray-600"
+                    className="ml-3 cursor-pointer text-sm text-gray-600"
                     htmlFor={option.value}
                   >
                     {option.label}

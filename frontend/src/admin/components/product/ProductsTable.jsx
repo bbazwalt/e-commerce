@@ -8,23 +8,24 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { deleteProduct, findAllProducts } from "../../../redux/product/action";
 import EmptyItemsText from "../../../shared/components/infoText/EmptyItemsText";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { deleteProduct, getAllProducts } from "../../../redux/product/action";
+import { toTitleCaseForHyphen } from "../../../utils/utils";
 
 const ProductsTable = () => {
+  const products = useSelector((store) => store.product.products);
+  const isLoading = useSelector((store) => store.product.isLoading);
+
   const dispatch = useDispatch();
 
-  const isLoading = useSelector((store) => store.product.isLoading);
-  const products = useSelector((store) => store.product.products);
+  useEffect(() => {
+    dispatch(findAllProducts());
+  }, [dispatch]);
 
   const handleProductDelete = (productId) => {
     dispatch(deleteProduct(productId));
   };
-
-  useEffect(() => {
-    dispatch(getAllProducts());
-  }, [dispatch]);
 
   return isLoading && !products ? (
     <LoadingText />
@@ -61,7 +62,9 @@ const ProductsTable = () => {
                       </TableCell>
                       <TableCell align="left">{item.id}</TableCell>
                       <TableCell align="left">{item.title}</TableCell>
-                      <TableCell align="left">{item.category.name}</TableCell>
+                      <TableCell align="left">
+                        {toTitleCaseForHyphen(item?.category?.name)}
+                      </TableCell>
                       <TableCell align="left">₹{item.price}</TableCell>
                       <TableCell align="left">
                         ₹{item.discountedPrice}

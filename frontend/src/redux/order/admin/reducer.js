@@ -1,3 +1,4 @@
+import { SIGN_OUT } from "../../user/actionType";
 import {
   CANCEL_ORDER_FAILURE,
   CANCEL_ORDER_REQUEST,
@@ -23,12 +24,12 @@ import {
 } from "./actionType";
 
 const initialState = {
-  isLoading: false,
   orders: [],
+  isLoading: false,
   error: null,
 };
 
-export const adminOrderReducer = (state = initialState, {type,payload}) => {
+export const adminOrderReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case GET_ORDERS_REQUEST:
     case CONFIRM_ORDER_REQUEST:
@@ -40,13 +41,10 @@ export const adminOrderReducer = (state = initialState, {type,payload}) => {
         ...state,
         isLoading: true,
       };
-
     case GET_ORDERS_SUCCESS:
       return {
         ...state,
-
         isLoading: false,
-
         orders: payload,
         error: null,
       };
@@ -91,6 +89,11 @@ export const adminOrderReducer = (state = initialState, {type,payload}) => {
     case CLEAR_ADMIN_ORDER_ERROR:
       return {
         ...state,
+        error: null,
+      };
+    case SIGN_OUT:
+      return {
+        orders: [],
         isLoading: false,
         error: null,
       };

@@ -9,35 +9,33 @@ import { FormControl, Pagination, Radio, RadioGroup } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import LoadingText from "../../../shared/components/infoText/LoadingText";
-import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
 import { findProducts } from "../../../redux/product/action";
 import { CLEAR_PRODUCT_ERROR } from "../../../redux/product/actionType";
+import LoadingText from "../../../shared/components/infoText/LoadingText";
+import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
+import {
+  classNames,
+  scrollToTop,
+  toTitleCaseForHyphen,
+} from "../../../utils/utils";
 import ProductCard from "../../components/product/ProductCard";
-import { filters, singleFilters } from "../../data/product/filterData";
-
-const sortOptions = [
-  { name: "Price: Low to High", value: "priceLow", current: false },
-  { name: "Price: High to Low", value: "priceHigh", current: false },
-];
-
-const classNames = (...classes) => {
-  return classes.filter(Boolean).join(" ");
-};
+import {
+  filters,
+  singleFilters,
+  sortOptions,
+} from "../../data/product/filterData";
 
 const Product = () => {
   const [sortValue, setSortValue] = useState(sortOptions[0].value);
 
   const product = useSelector((store) => store.product);
-
   const isLoading = useSelector((store) => store.product.isLoading);
   const error = useSelector((store) => store.product.error);
-
   const productData = product.products.content;
 
+  const param = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const param = useParams();
   const dispatch = useDispatch();
 
   const decodedQueryString = decodeURIComponent(location.search);
@@ -52,12 +50,37 @@ const Product = () => {
   const stock = searchParams.get("stock");
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
+    scrollToTop();
   }, [pageNumber]);
+
+  useEffect(() => {
+    const [minPrice, maxPrice] =
+      price === null ? [0, 200000] : price.split("-").map(Number);
+    const data = {
+      category: param.section,
+      colors: color || "",
+      storages: storage || "",
+      memories: memory || "",
+      minPrice,
+      maxPrice,
+      minDiscount: discount || 0,
+      sort: sort || "priceLow",
+      pageNumber: pageNumber || 1,
+      pageSize: 9,
+      stock: stock || "",
+    };
+    dispatch(findProducts(data));
+  }, [
+    param.section,
+    color,
+    storage,
+    memory,
+    price,
+    discount,
+    sort,
+    pageNumber,
+    stock,
+  ]);
 
   const handleFilter = (value, sectionId) => {
     const searchParams = new URLSearchParams(location.search);
@@ -70,7 +93,6 @@ const Product = () => {
     } else {
       filterValue.push(value);
     }
-
     if (filterValue.length > 0) {
       searchParams.set(sectionId, filterValue.join(","));
     }
@@ -80,7 +102,6 @@ const Product = () => {
 
   const handleRadioFilter = (value, sectionId) => {
     const searchParams = new URLSearchParams(location.search);
-
     if (value) {
       searchParams.set(sectionId, value);
     } else {
@@ -116,39 +137,10 @@ const Product = () => {
     }
   });
 
-  useEffect(() => {
-    const [minPrice, maxPrice] =
-      price === null ? [0, 200000] : price.split("-").map(Number);
-    const data = {
-      category: param.section,
-      colors: color || "",
-      storages: storage || "",
-      memories: memory || "",
-      minPrice,
-      maxPrice,
-      minDiscount: discount || 0,
-      sort: sort || "priceLow",
-      pageNumber: pageNumber || 1,
-      pageSize: 9,
-      stock: stock || "",
-    };
-    dispatch(findProducts(data));
-  }, [
-    param.section,
-    color,
-    storage,
-    memory,
-    price,
-    discount,
-    sort,
-    pageNumber,
-    stock,
-  ]);
-
   return (
-    <div className="bg-white">
+    <div>
       <div>
-        <main className="mx-auto max-w-7xl px-4 px-8">
+        <main className="mx-auto max-w-7xl px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
             <h1
               style={{
@@ -156,9 +148,8 @@ const Product = () => {
               }}
               className="text-4xl font-bold tracking-tight text-gray-900"
             >
-              {param.section.split("-").join(" ").toUpperCase()}
+              {toTitleCaseForHyphen(param.section)}
             </h1>
-
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -174,7 +165,6 @@ const Product = () => {
                     />
                   </Menu.Button>
                 </div>
-
                 <Transition
                   as={Fragment}
                   enter="transition ease-out duration-100"
@@ -210,159 +200,153 @@ const Product = () => {
               </Menu>
             </div>
           </div>
-
           <section aria-labelledby="products-heading" className="pb-24 pt-6">
             <h2 id="products-heading" className="sr-only">
               Products
             </h2>
-
             <div className="grid grid-cols-5 gap-x-8 gap-y-10">
-              <div className="">
-                <form>
-                  <div className="flex items-center justify-between pb-5">
-                    <h1 className="text-lg font-bold opacity-50">Filters</h1>
-                    <FilterListIcon />
-                  </div>
-
-                  {filters.map((section) => (
-                    <Disclosure
-                      as="div"
-                      key={section.id}
-                      className="border-b border-gray-200 py-6"
-                    >
-                      {({ open }) => (
-                        <>
-                          <h3 className="-my-3 flow-root">
-                            <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                              <span className="font-medium text-gray-900">
-                                {section.name}
-                              </span>
-                              <span className="ml-6 flex items-center">
-                                {open ? (
-                                  <MinusIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <PlusIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="pt-6">
-                            <div className="space-y-4">
-                              {section.options.map((option, optionIdx) => (
-                                <div
-                                  key={option.value}
-                                  className="flex items-center"
+              <form>
+                <div className="flex items-center justify-between pb-5">
+                  <h1 className="text-lg font-bold opacity-50">Filters</h1>
+                  <FilterListIcon />
+                </div>
+                {filters.map((section) => (
+                  <Disclosure
+                    as="div"
+                    key={section.id}
+                    className="border-b border-gray-200 py-6"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              {section.name}
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="pt-6">
+                          <div className="space-y-4">
+                            {section.options.map((option, optionIdx) => (
+                              <div
+                                key={option.value}
+                                className="flex items-center"
+                              >
+                                <input
+                                  onChange={() =>
+                                    handleFilter(option.value, section.id)
+                                  }
+                                  id={`filter-${section.id}-${optionIdx}`}
+                                  name={`${section.id}[]`}
+                                  defaultValue={option.value}
+                                  type="checkbox"
+                                  defaultChecked={option.checked}
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label
+                                  htmlFor={`filter-${section.id}-${optionIdx}`}
+                                  className="ml-3 text-sm text-gray-600"
                                 >
-                                  <input
-                                    onChange={() =>
-                                      handleFilter(option.value, section.id)
-                                    }
-                                    id={`filter-${section.id}-${optionIdx}`}
-                                    name={`${section.id}[]`}
-                                    defaultValue={option.value}
-                                    type="checkbox"
-                                    defaultChecked={option.checked}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                  />
-                                  <label
-                                    htmlFor={`filter-${section.id}-${optionIdx}`}
-                                    className="ml-3 text-sm text-gray-600"
+                                  {option.label}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                ))}
+
+                {singleFilters.map((section) => (
+                  <Disclosure
+                    as="div"
+                    key={section.id}
+                    className="border-b border-gray-200 py-6"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              {section.name}
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="-ml-2 pt-6">
+                          <div className="space-y-2">
+                            <FormControl>
+                              <RadioGroup
+                                aria-labelledby="demo-radio-buttons-group-label"
+                                name="radio-buttons-group"
+                              >
+                                {section.options.map((option, optionIdx) => (
+                                  <div
+                                    key={optionIdx}
+                                    className="flex items-center"
                                   >
-                                    {option.label}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                  ))}
-
-                  {singleFilters.map((section) => (
-                    <Disclosure
-                      as="div"
-                      key={section.id}
-                      className="border-b border-gray-200 py-6"
-                    >
-                      {({ open }) => (
-                        <>
-                          <h3 className="-my-3 flow-root">
-                            <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                              <span className="font-medium text-gray-900">
-                                {section.name}
-                              </span>
-                              <span className="ml-6 flex items-center">
-                                {open ? (
-                                  <MinusIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <PlusIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="-ml-2 pt-6">
-                            <div className="space-y-2">
-                              <FormControl>
-                                <RadioGroup
-                                  aria-labelledby="demo-radio-buttons-group-label"
-                                  name="radio-buttons-group"
-                                >
-                                  {section.options.map((option, optionIdx) => (
-                                    <div
-                                      key={optionIdx}
-                                      className="flex items-center"
+                                    <Radio
+                                      id={`filter-${section.id}-${optionIdx}`}
+                                      onChange={(e) =>
+                                        handleRadioFilter(
+                                          e.target.value,
+                                          section.id,
+                                        )
+                                      }
+                                      value={option.value}
+                                      color="primary"
+                                      size="small"
+                                      className="m-0 flex-shrink-0 p-0"
+                                    />
+                                    <label
+                                      htmlFor={`filter-${section.id}-${optionIdx}`}
+                                      className="cursor-pointer text-sm text-gray-600"
+                                      onClick={() =>
+                                        handleRadioFilter(
+                                          option.value,
+                                          section.id,
+                                        )
+                                      }
                                     >
-                                      <Radio
-                                        id={`filter-${section.id}-${optionIdx}`}
-                                        onChange={(e) =>
-                                          handleRadioFilter(
-                                            e.target.value,
-                                            section.id,
-                                          )
-                                        }
-                                        value={option.value}
-                                        color="primary"
-                                        size="small"
-                                        className="m-0 flex-shrink-0 p-0"
-                                      />
-                                      <label
-                                        htmlFor={`filter-${section.id}-${optionIdx}`}
-                                        className="cursor-pointer text-sm text-gray-600"
-                                        onClick={() =>
-                                          handleRadioFilter(
-                                            option.value,
-                                            section.id,
-                                          )
-                                        }
-                                      >
-                                        {option.label}
-                                      </label>
-                                    </div>
-                                  ))}
-                                </RadioGroup>
-                              </FormControl>
-                            </div>
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                  ))}
-                </form>
-              </div>
-
+                                      {option.label}
+                                    </label>
+                                  </div>
+                                ))}
+                              </RadioGroup>
+                            </FormControl>
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                ))}
+              </form>
               <div className="col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white">
                   {isLoading ? (

@@ -1,3 +1,4 @@
+import { SIGN_OUT } from "../../user/actionType";
 import {
   CLEAR_ORDER_ERROR,
   CREATE_ORDER_FAILURE,
@@ -27,7 +28,7 @@ const initialState = {
   isLoading: false,
 };
 
-export const orderReducer = (state = initialState, {type,payload}) => {
+export const orderReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case CREATE_ORDER_REQUEST:
     case FIND_ORDERS_REQUEST:
@@ -85,6 +86,13 @@ export const orderReducer = (state = initialState, {type,payload}) => {
     case CLEAR_ORDER_ERROR:
       return {
         ...state,
+        error: null,
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
+        orders: [],
+        order: null,
         isLoading: false,
         error: null,
       };

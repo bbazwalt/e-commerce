@@ -1,4 +1,8 @@
-import { a54Banner, s24UltraBanner, zfold5Banner } from "../../image/imageData";
+import {
+  a54Banner,
+  s24UltraBanner,
+  zfold5Banner,
+} from "../../../image/imageData";
 
 export const mainCarouselData = [
   {

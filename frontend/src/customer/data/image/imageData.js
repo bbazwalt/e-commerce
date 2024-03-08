@@ -1,5 +1,5 @@
-import mainLogoSrc from "./../../assets/main-logo.jpg";
 import a54BannerSrc from "./../../assets/a54.jpg";
+import mainLogoSrc from "./../../assets/main-logo.jpg";
 import s24UltraBannerSrc from "./../../assets/s24-ultra.jpg";
 
 export const zfold5 =
@@ -12,4 +12,3 @@ export const zfold5Banner =
 export const mainLogo = mainLogoSrc;
 export const a54Banner = a54BannerSrc;
 export const s24UltraBanner = s24UltraBannerSrc;
- 

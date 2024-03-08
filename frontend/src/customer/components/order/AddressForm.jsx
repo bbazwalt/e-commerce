@@ -1,37 +1,59 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
+import { useFormik } from "formik";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import {
+  createOrder,
+  findUserAddresses,
+} from "../../../redux/order/customer/action";
+import EmptyItemsText from "../../../shared/components/infoText/EmptyItemsText";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
-import { createOrder, getUserAddresses } from "../../../redux/order/customer/action";
 import AddressCard from "./AddressCard";
 
+const validationSchema = Yup.object({
+  firstName: Yup.string()
+    .trim()
+    .strict(true)
+    .required("First name is required."),
+  lastName: Yup.string().trim().strict(true).required("Last name is required."),
+  streetAddress: Yup.string()
+    .trim()
+    .strict(true)
+    .required("Street address is required."),
+  city: Yup.string().trim().strict(true).required("City is required."),
+  state: Yup.string().trim().strict(true).required("State is required."),
+  country: Yup.string().trim().strict(true).required("Country is required."),
+  postalCode: Yup.string()
+    .trim()
+    .strict(true)
+    .required("Postal code is required.")
+    .matches(/^[1-9][0-9]{5}$/, "Invalid postal code format."),
+  email: Yup.string()
+    .trim()
+    .strict(true)
+    .required("Email is required.")
+    .email("Invalid email address format."),
+  phoneNumber: Yup.string()
+    .trim()
+    .strict(true)
+    .required("Phone number is required")
+    .matches(/^(?:\+\d{1,3}[- ]?)?\d{10}$/, "Invalid phone number format."),
+});
+
 const AddressForm = () => {
+  const addresses = useSelector((store) => store.order.addresses);
+  const isLoading = useSelector((store) => store.order.isLoading);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isLoading = useSelector((store) => store.order.isLoading);
-  const addresses = useSelector((store) => store.order.addresses);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-
-    const address = {
-      firstName: data.get("firstName"),
-      lastName: data.get("lastName"),
-      streetAddress: data.get("streetAddress"),
-      city: data.get("city"),
-      state: data.get("state"),
-      country: data.get("country"),
-      postalCode: data.get("postalCode"),
-      email: data.get("email"),
-      phoneNumber: data.get("phoneNumber"),
-    };
-
-    const orderData = { address, navigate };
-    dispatch(createOrder(orderData));
-  };
+  useEffect(() => {
+    if (!addresses) {
+      dispatch(findUserAddresses());
+    }
+  }, []);
 
   const handleSavedAddressSubmit = (item) => {
     const address = item;
@@ -39,11 +61,28 @@ const AddressForm = () => {
     dispatch(createOrder(orderData));
   };
 
-  useEffect(() => {
-    if (!addresses) {
-      dispatch(getUserAddresses());
-    }
-  }, []);
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      streetAddress: "",
+      city: "",
+      state: "",
+      country: "",
+      postalCode: "",
+      email: "",
+      phoneNumber: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      const trimmedValues = Object.keys(values).reduce((acc, key) => {
+        acc[key] = values[key].trim();
+        return acc;
+      }, {});
+      const orderData = { address: trimmedValues, navigate };
+      dispatch(createOrder(orderData));
+    },
+  });
 
   return (
     <div className="ml-10">
@@ -58,13 +97,15 @@ const AddressForm = () => {
           </div>
           {isLoading && !addresses ? (
             <LoadingText />
+          ) : addresses?.length === 0 && !isLoading ? (
+            <EmptyItemsText content="addresses" />
           ) : (
             addresses?.map((item) => (
               <div key={item.id} className=" border-b  p-5 py-7">
                 <AddressCard item={item} />
                 <Button
                   onClick={() => handleSavedAddressSubmit(item)}
-                  sx={{ mt: 2, bgcolor: "#1976D2" }}
+                  sx={{ mt: 2 }}
                   size="large"
                   variant="contained"
                 >
@@ -74,10 +115,9 @@ const AddressForm = () => {
             ))
           )}
         </Grid>
-
-        <Grid item xs={12} lg={7} className="">
+        <Grid item xs={12} lg={7}>
           <Box className="rounded-s-md border p-5 shadow-md ">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -87,6 +127,16 @@ const AddressForm = () => {
                     label="First Name"
                     fullWidth
                     autoComplete="given-name"
+                    value={formik.values.firstName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.firstName &&
+                      Boolean(formik.errors.firstName)
+                    }
+                    helperText={
+                      formik.touched.firstName && formik.errors.firstName
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -97,6 +147,15 @@ const AddressForm = () => {
                     label="Last Name"
                     fullWidth
                     autoComplete="family-name"
+                    value={formik.values.lastName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.lastName && Boolean(formik.errors.lastName)
+                    }
+                    helperText={
+                      formik.touched.lastName && formik.errors.lastName
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -109,6 +168,17 @@ const AddressForm = () => {
                     autoComplete="address"
                     multiline
                     rows={4}
+                    value={formik.values.streetAddress}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.streetAddress &&
+                      Boolean(formik.errors.streetAddress)
+                    }
+                    helperText={
+                      formik.touched.streetAddress &&
+                      formik.errors.streetAddress
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -119,6 +189,11 @@ const AddressForm = () => {
                     label="City"
                     fullWidth
                     autoComplete="city"
+                    value={formik.values.city}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.city && Boolean(formik.errors.city)}
+                    helperText={formik.touched.city && formik.errors.city}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -129,6 +204,11 @@ const AddressForm = () => {
                     label="State"
                     fullWidth
                     autoComplete="state"
+                    value={formik.values.state}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.state && Boolean(formik.errors.state)}
+                    helperText={formik.touched.state && formik.errors.state}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -139,6 +219,13 @@ const AddressForm = () => {
                     label="Country"
                     fullWidth
                     autoComplete="country"
+                    value={formik.values.country}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.country && Boolean(formik.errors.country)
+                    }
+                    helperText={formik.touched.country && formik.errors.country}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -149,6 +236,16 @@ const AddressForm = () => {
                     label="Postal Code"
                     fullWidth
                     autoComplete="shipping postal-code"
+                    value={formik.values.postalCode}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.postalCode &&
+                      Boolean(formik.errors.postalCode)
+                    }
+                    helperText={
+                      formik.touched.postalCode && formik.errors.postalCode
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -159,6 +256,11 @@ const AddressForm = () => {
                     label="Email"
                     fullWidth
                     autoComplete="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -169,13 +271,23 @@ const AddressForm = () => {
                     label="Phone Number"
                     fullWidth
                     autoComplete="phone"
+                    value={formik.values.phoneNumber}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.phoneNumber &&
+                      Boolean(formik.errors.phoneNumber)
+                    }
+                    helperText={
+                      formik.touched.phoneNumber && formik.errors.phoneNumber
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <div className="flex items-center justify-center">
                     <Button
                       type="submit"
-                      sx={{ py: 1.5, mt: 2, bgcolor: "#1976D2" }}
+                      sx={{ py: 1.5, mt: 2 }}
                       size="large"
                       variant="contained"
                     >
