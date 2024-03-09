@@ -35,7 +35,6 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     scrollToTop();
-    dispatch(getCart());
     const urlParam = new URLSearchParams(window.location.search);
     setPaymentId(urlParam.get("razorpay_payment_id"));
   }, []);
@@ -46,6 +45,7 @@ const PaymentSuccess = () => {
       const data = { orderId, paymentId };
       dispatch(updatePayment(data));
     }
+    dispatch(getCart());
   }, [orderId, paymentId]);
 
   return (
