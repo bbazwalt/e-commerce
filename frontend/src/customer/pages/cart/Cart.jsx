@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getCart } from "../../../redux/cart/action";
-import { currentUser } from "../../../redux/user/action";
+import { findCart } from "../../../redux/cart/action";
 import CartItem from "../../components/cart/CartItem";
 import PriceDetails from "../../components/cart/PriceDetails";
 
@@ -14,11 +13,10 @@ const Cart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getCart());
+    dispatch(findCart());
   }, [user]);
 
   const handleCheckout = () => {
-    dispatch(currentUser());
     navigate("/checkout?step=2");
   };
 

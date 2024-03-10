@@ -1,9 +1,9 @@
 import axios from "axios";
-import { API_BASE_URL_V1, AUTH_API_BASE_URL } from "../../config/apiConfig";
+import { API_BASE_URL, AUTH_API_BASE_URL } from "../../config/apiConfig";
 import {
-  GET_USER_FAILURE,
-  GET_USER_REQUEST,
-  GET_USER_SUCCESS,
+  FIND_REQ_USER_FAILURE,
+  FIND_REQ_USER_REQUEST,
+  FIND_REQ_USER_SUCCESS,
   SIGN_IN_FAILURE,
   SIGN_IN_REQUEST,
   SIGN_IN_SUCCESS,
@@ -18,7 +18,7 @@ export const signUp = (reqData, authSignIn) => async (dispatch) => {
   try {
     axios.defaults.baseURL = AUTH_API_BASE_URL;
     const { data } = await axios.post("/signup", reqData);
-    if (data.token) {
+    if (data.token && authSignIn) {
       authSignIn(data.token, data.admin);
     }
     dispatch({ type: SIGN_UP_SUCCESS });
@@ -28,7 +28,7 @@ export const signUp = (reqData, authSignIn) => async (dispatch) => {
       payload: error?.response?.data?.message,
     });
   } finally {
-    axios.defaults.baseURL = API_BASE_URL_V1;
+    axios.defaults.baseURL = API_BASE_URL;
   }
 };
 
@@ -37,7 +37,7 @@ export const signIn = (reqData, authSignIn) => async (dispatch) => {
   try {
     axios.defaults.baseURL = AUTH_API_BASE_URL;
     const { data } = await axios.post("/signin", reqData);
-    if (data.token) {
+    if (data.token && authSignIn) {
       authSignIn(data.token, data.admin);
     }
     dispatch({ type: SIGN_IN_SUCCESS });
@@ -47,18 +47,18 @@ export const signIn = (reqData, authSignIn) => async (dispatch) => {
       payload: error?.response?.data?.message,
     });
   } finally {
-    axios.defaults.baseURL = API_BASE_URL_V1;
+    axios.defaults.baseURL = API_BASE_URL;
   }
 };
 
-export const currentUser = (authSignOut) => async (dispatch) => {
-  dispatch({ type: GET_USER_REQUEST });
+export const findReqUser = (authSignOut) => async (dispatch) => {
+  dispatch({ type: FIND_REQ_USER_REQUEST });
   try {
     const { data } = await axios.get("/users/profile");
-    dispatch({ type: GET_USER_SUCCESS, payload: data });
+    dispatch({ type: FIND_REQ_USER_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_USER_FAILURE,
+      type: FIND_REQ_USER_FAILURE,
       payload: error?.response?.data?.message,
     });
     if (error?.response?.data?.status === false) {

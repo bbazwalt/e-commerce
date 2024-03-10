@@ -9,12 +9,12 @@ import {
   FIND_ORDERS_FAILURE,
   FIND_ORDERS_REQUEST,
   FIND_ORDERS_SUCCESS,
-  GET_ORDER_BY_ID_FAILURE,
-  GET_ORDER_BY_ID_REQUEST,
-  GET_ORDER_BY_ID_SUCCESS,
-  GET_USER_ADDRESSES_FAILURE,
-  GET_USER_ADDRESSES_REQUEST,
-  GET_USER_ADDRESSES_SUCCESS,
+  FIND_ORDER_BY_ID_FAILURE,
+  FIND_ORDER_BY_ID_REQUEST,
+  FIND_ORDER_BY_ID_SUCCESS,
+  FIND_USER_ADDRESSES_FAILURE,
+  FIND_USER_ADDRESSES_REQUEST,
+  FIND_USER_ADDRESSES_SUCCESS,
   UPDATE_PAYMENT_FAILURE,
   UPDATE_PAYMENT_REQUEST,
   UPDATE_PAYMENT_SUCCESS,
@@ -50,14 +50,14 @@ export const findOrders = (statuses) => async (dispatch) => {
   }
 };
 
-export const getOrderById = (orderId, navigate) => async (dispatch) => {
-  dispatch({ type: GET_ORDER_BY_ID_REQUEST });
+export const findOrderById = (orderId, navigate) => async (dispatch) => {
+  dispatch({ type: FIND_ORDER_BY_ID_REQUEST });
   try {
     const { data } = await axios.get(`/orders/${orderId}`);
-    dispatch({ type: GET_ORDER_BY_ID_SUCCESS, payload: data });
+    dispatch({ type: FIND_ORDER_BY_ID_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_ORDER_BY_ID_FAILURE,
+      type: FIND_ORDER_BY_ID_FAILURE,
       payload: error?.response?.data?.message,
     });
     if (navigate) {
@@ -67,13 +67,13 @@ export const getOrderById = (orderId, navigate) => async (dispatch) => {
 };
 
 export const findUserAddresses = () => async (dispatch) => {
-  dispatch({ type: GET_USER_ADDRESSES_REQUEST });
+  dispatch({ type: FIND_USER_ADDRESSES_REQUEST });
   try {
     const { data } = await axios.get("/users/addresses");
-    dispatch({ type: GET_USER_ADDRESSES_SUCCESS, payload: data });
+    dispatch({ type: FIND_USER_ADDRESSES_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_USER_ADDRESSES_FAILURE,
+      type: FIND_USER_ADDRESSES_FAILURE,
       payload: error?.response?.data?.message,
     });
   }

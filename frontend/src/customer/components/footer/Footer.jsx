@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bottom-0 mb-0 mt-10 pb-0 ">
       <div className="flex flex-col items-center bg-black text-center text-white">
         <div className=" mt-10 flex flex-row justify-center space-x-20">
-          <Typography className="pb-5 " variant="h6">
+          <Typography className="pb-5 " variant="h5">
             Smartphones
           </Typography>
           <Link to={"/smartphones/galaxy-z-series"}>

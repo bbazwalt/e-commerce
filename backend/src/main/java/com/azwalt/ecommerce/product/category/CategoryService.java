@@ -7,4 +7,5 @@ public interface CategoryService {
     public Category createCategory(CreateCategoryRequest createCategoryRequest) throws Exception;
 
     public Set<Category> findAllCategories();
+    
 }

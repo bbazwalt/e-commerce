@@ -12,4 +12,5 @@ public class AddItemRequest {
 
 	@NotNull
 	private Long productId;
+	
 }

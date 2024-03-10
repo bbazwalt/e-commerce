@@ -20,7 +20,7 @@ import {
   confirmOrder,
   deleteOrder,
   deliverOrder,
-  getOrders,
+  findOrders,
   pendingOrder,
   placeOrder,
   shipOrder,
@@ -54,7 +54,7 @@ const OrdersTable = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(findOrders());
   }, [dispatch]);
 
   const handleClick = (event, index) => {

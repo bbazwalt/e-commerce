@@ -12,9 +12,9 @@ import {
   DELIVER_ORDER_FAILURE,
   DELIVER_ORDER_REQUEST,
   DELIVER_ORDER_SUCCESS,
-  GET_ORDERS_FAILURE,
-  GET_ORDERS_REQUEST,
-  GET_ORDERS_SUCCESS,
+  FIND_ORDERS_FAILURE,
+  FIND_ORDERS_REQUEST,
+  FIND_ORDERS_SUCCESS,
   PENDING_ORDER_FAILURE,
   PENDING_ORDER_REQUEST,
   PENDING_ORDER_SUCCESS,
@@ -26,14 +26,14 @@ import {
   SHIP_ORDER_SUCCESS,
 } from "./actionType";
 
-export const getOrders = () => async (dispatch) => {
-  dispatch({ type: GET_ORDERS_REQUEST });
+export const findOrders = () => async (dispatch) => {
+  dispatch({ type: FIND_ORDERS_REQUEST });
   try {
     const { data } = await axios.get("/admin/orders");
-    dispatch({ type: GET_ORDERS_SUCCESS, payload: data });
+    dispatch({ type: FIND_ORDERS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_ORDERS_FAILURE,
+      type: FIND_ORDERS_FAILURE,
       payload: error?.response?.data?.message,
     });
   }

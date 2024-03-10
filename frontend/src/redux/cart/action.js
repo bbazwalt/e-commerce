@@ -3,25 +3,25 @@ import {
   ADD_ITEM_TO_CART_FAILURE,
   ADD_ITEM_TO_CART_REQUEST,
   ADD_ITEM_TO_CART_SUCCESS,
-  GET_CART_FAILURE,
-  GET_CART_REQUEST,
-  GET_CART_SUCCESS,
-  REMOVE_CART_ITEM_FAILURE,
-  REMOVE_CART_ITEM_REQUEST,
-  REMOVE_CART_ITEM_SUCCESS,
+  FIND_CART_FAILURE,
+  FIND_CART_REQUEST,
+  FIND_CART_SUCCESS,
+  DELETE_CART_ITEM_FAILURE,
+  DELETE_CART_ITEM_REQUEST,
+  DELETE_CART_ITEM_SUCCESS,
   UPDATE_CART_ITEM_FAILURE,
   UPDATE_CART_ITEM_REQUEST,
   UPDATE_CART_ITEM_SUCCESS,
 } from "./actionType";
 
-export const getCart = () => async (dispatch) => {
-  dispatch({ type: GET_CART_REQUEST });
+export const findCart = () => async (dispatch) => {
+  dispatch({ type: FIND_CART_REQUEST });
   try {
     const { data } = await axios.get("/cart");
-    dispatch({ type: GET_CART_SUCCESS, payload: data });
+    dispatch({ type: FIND_CART_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_CART_FAILURE,
+      type: FIND_CART_FAILURE,
       payload: error?.response?.data?.message,
     });
   }
@@ -32,7 +32,7 @@ export const addItemToCart = (reqData) => async (dispatch) => {
   try {
     const { data } = await axios.post("/cart", reqData);
     dispatch({ type: ADD_ITEM_TO_CART_SUCCESS, payload: data });
-    dispatch(getCart());
+    dispatch(findCart());
     dispatch(reqData.navigate("/cart"));
   } catch (error) {
     dispatch({
@@ -49,7 +49,7 @@ export const updateCartItem = (reqData) => async (dispatch) => {
       `/cart-items/${reqData.cartItemId}`,
       reqData.data,
     );
-    dispatch(getCart());
+    dispatch(findCart());
     dispatch({ type: UPDATE_CART_ITEM_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -59,15 +59,15 @@ export const updateCartItem = (reqData) => async (dispatch) => {
   }
 };
 
-export const removeCartItem = (cartItemId) => async (dispatch) => {
-  dispatch({ type: REMOVE_CART_ITEM_REQUEST });
+export const deleteCartItem = (cartItemId) => async (dispatch) => {
+  dispatch({ type: DELETE_CART_ITEM_REQUEST });
   try {
     const { data } = await axios.delete(`/cart-items/${cartItemId}`);
-    dispatch(getCart());
-    dispatch({ type: REMOVE_CART_ITEM_SUCCESS, payload: data });
+    dispatch(findCart());
+    dispatch({ type: DELETE_CART_ITEM_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: REMOVE_CART_ITEM_FAILURE,
+      type: DELETE_CART_ITEM_FAILURE,
       payload: error?.response?.data?.message,
     });
   }

@@ -2,9 +2,9 @@ import { Alert, AlertTitle } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getCart } from "../../../redux/cart/action";
+import { findCart } from "../../../redux/cart/action";
 import {
-  getOrderById,
+  findOrderById,
   updatePayment,
 } from "../../../redux/order/customer/action";
 import { CLEAR_ORDER_ERROR } from "../../../redux/order/customer/actionType";
@@ -40,12 +40,12 @@ const PaymentSuccess = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getOrderById(orderId, navigate));
+    dispatch(findOrderById(orderId, navigate));
     if (paymentId) {
       const data = { orderId, paymentId };
       dispatch(updatePayment(data));
     }
-    dispatch(getCart());
+    dispatch(findCart());
   }, [orderId, paymentId]);
 
   return (

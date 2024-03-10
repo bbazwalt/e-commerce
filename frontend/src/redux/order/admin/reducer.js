@@ -13,9 +13,9 @@ import {
   DELIVER_ORDER_FAILURE,
   DELIVER_ORDER_REQUEST,
   DELIVER_ORDER_SUCCESS,
-  GET_ORDERS_FAILURE,
-  GET_ORDERS_REQUEST,
-  GET_ORDERS_SUCCESS,
+  FIND_ORDERS_FAILURE,
+  FIND_ORDERS_REQUEST,
+  FIND_ORDERS_SUCCESS,
   PENDING_ORDER_SUCCESS,
   PLACE_ORDER_SUCCESS,
   SHIP_ORDER_FAILURE,
@@ -31,7 +31,7 @@ const initialState = {
 
 export const adminOrderReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case GET_ORDERS_REQUEST:
+    case FIND_ORDERS_REQUEST:
     case CONFIRM_ORDER_REQUEST:
     case SHIP_ORDER_REQUEST:
     case DELIVER_ORDER_REQUEST:
@@ -41,7 +41,7 @@ export const adminOrderReducer = (state = initialState, { type, payload }) => {
         ...state,
         isLoading: true,
       };
-    case GET_ORDERS_SUCCESS:
+    case FIND_ORDERS_SUCCESS:
       return {
         ...state,
         isLoading: false,
@@ -69,7 +69,7 @@ export const adminOrderReducer = (state = initialState, { type, payload }) => {
         orders: state.orders.filter((order) => order.id !== payload),
         error: null,
       };
-    case GET_ORDERS_FAILURE:
+    case FIND_ORDERS_FAILURE:
       return {
         ...state,
         isLoading: false,

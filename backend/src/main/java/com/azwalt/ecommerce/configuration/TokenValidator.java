@@ -32,9 +32,9 @@ public class TokenValidator extends OncePerRequestFilter {
 		String token = httpServletRequest.getHeader(TokenConstants.REQUEST_HEADER);
 		if (token != null) {
 			try {
-				token = token.substring(7);
 				SecretKey key = Keys.hmacShaKeyFor(TokenConstants.SECRET_KEY.getBytes());
-				Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+				Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token.substring(7))
+						.getPayload();
 				String username = String.valueOf(claims.get("username"));
 				List<GrantedAuthority> authorities = new ArrayList<>();
 				Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);

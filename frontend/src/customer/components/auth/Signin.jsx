@@ -84,7 +84,7 @@ const SignIn = ({ setIsSignIn }) => {
           helperText={formik.touched.password && formik.errors.password}
         />
         <Button
-          className="w-full"
+          fullWidth
           type="submit"
           variant="contained"
           size="large"
@@ -100,8 +100,12 @@ const SignIn = ({ setIsSignIn }) => {
       )}
       {isLoading && <LoadingText />}
       <div className="-mb-2 mt-4 flex items-center justify-center space-x-1">
-        <p className="m-0">Don't have an account yet?</p>
-        <Button sx={{ mt: "0.15rem" }} onClick={handleSignUpClick}>
+        <p>Don't have an account yet?</p>
+        <Button
+          variant="text"
+          sx={{ mt: "0.15rem" }}
+          onClick={handleSignUpClick}
+        >
           SIGN UP
         </Button>
       </div>

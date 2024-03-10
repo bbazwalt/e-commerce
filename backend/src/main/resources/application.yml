@@ -13,5 +13,5 @@ spring:
     show-sql: true
 razorpay:
   api:
-    key:
-    secret:
+    key: rzp_test_T1aPDxOy22KIol
+    secret: zdQFFvVQPfsfj3wrTRO3iyOs

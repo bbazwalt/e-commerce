@@ -5,7 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getCart } from "../../../redux/cart/action";
+import { findCart } from "../../../redux/cart/action";
 import { signOut } from "../../../redux/user/action";
 import { useAuth } from "../../../redux/user/authContext";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
@@ -30,7 +30,7 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getCart());
+    dispatch(findCart());
   }, []);
 
   useEffect(() => {

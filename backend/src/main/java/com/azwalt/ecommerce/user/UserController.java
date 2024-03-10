@@ -27,4 +27,5 @@ public class UserController {
 	public Set<Address> findUserAddresses() throws Exception {
 		return userUtil.getCurrentUser().getAddresses();
 	}
+	
 }

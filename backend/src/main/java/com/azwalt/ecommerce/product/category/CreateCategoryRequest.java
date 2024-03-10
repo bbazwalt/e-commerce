@@ -14,4 +14,5 @@ public class CreateCategoryRequest {
     private String name;
 
     private Long parentCategoryId;
+
 }

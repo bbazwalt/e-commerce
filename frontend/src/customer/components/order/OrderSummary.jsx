@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   bypassPayment,
   createPayment,
-  getOrderById,
+  findOrderById,
 } from "../../../redux/order/customer/action";
 import CartItem from "../cart/CartItem";
 import PriceDetails from "../cart/PriceDetails";
@@ -20,7 +20,7 @@ const OrderSummary = () => {
   const orderId = searchParams.get("orderId");
 
   useEffect(() => {
-    dispatch(getOrderById(orderId));
+    dispatch(findOrderById(orderId));
   }, [orderId]);
 
   const handleCheckout = () => {

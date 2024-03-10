@@ -4,12 +4,12 @@ import {
   ADD_ITEM_TO_CART_REQUEST,
   ADD_ITEM_TO_CART_SUCCESS,
   CLEAR_CART_ERROR,
-  GET_CART_FAILURE,
-  GET_CART_REQUEST,
-  GET_CART_SUCCESS,
-  REMOVE_CART_ITEM_FAILURE,
-  REMOVE_CART_ITEM_REQUEST,
-  REMOVE_CART_ITEM_SUCCESS,
+  FIND_CART_FAILURE,
+  FIND_CART_REQUEST,
+  FIND_CART_SUCCESS,
+  DELETE_CART_ITEM_FAILURE,
+  DELETE_CART_ITEM_REQUEST,
+  DELETE_CART_ITEM_SUCCESS,
   UPDATE_CART_ITEM_FAILURE,
   UPDATE_CART_ITEM_REQUEST,
   UPDATE_CART_ITEM_SUCCESS,
@@ -40,13 +40,13 @@ export const cartReducer = (state = initialState, { type, payload }) => {
         isLoading: false,
         error: payload,
       };
-    case GET_CART_REQUEST:
+    case FIND_CART_REQUEST:
       return {
         error: null,
         ...state,
         isLoading: false,
       };
-    case GET_CART_SUCCESS:
+    case FIND_CART_SUCCESS:
       return {
         ...state,
         error: null,
@@ -54,16 +54,16 @@ export const cartReducer = (state = initialState, { type, payload }) => {
         cart: payload,
         isLoading: false,
       };
-    case GET_CART_FAILURE:
+    case FIND_CART_FAILURE:
       return { ...state, isLoading: false, error: payload };
-    case REMOVE_CART_ITEM_REQUEST:
+    case DELETE_CART_ITEM_REQUEST:
     case UPDATE_CART_ITEM_REQUEST:
       return {
         ...state,
         isLoading: true,
         error: null,
       };
-    case REMOVE_CART_ITEM_SUCCESS:
+    case DELETE_CART_ITEM_SUCCESS:
       return {
         ...state,
         error: null,
@@ -79,7 +79,7 @@ export const cartReducer = (state = initialState, { type, payload }) => {
         error: null,
         isLoading: false,
       };
-    case REMOVE_CART_ITEM_FAILURE:
+    case DELETE_CART_ITEM_FAILURE:
     case UPDATE_CART_ITEM_FAILURE:
       return {
         ...state,

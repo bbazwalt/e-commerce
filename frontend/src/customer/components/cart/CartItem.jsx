@@ -1,7 +1,7 @@
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { removeCartItem, updateCartItem } from "../../../redux/cart/action";
+import { deleteCartItem, updateCartItem } from "../../../redux/cart/action";
 
 const CartItem = ({ item, isSummary }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const CartItem = ({ item, isSummary }) => {
   };
 
   const handleRemoveCartItem = () => {
-    dispatch(removeCartItem(item.id));
+    dispatch(deleteCartItem(item.id));
   };
 
   return (

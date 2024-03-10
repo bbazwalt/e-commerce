@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getOrderById } from "../../../redux/order/customer/action";
+import { findOrderById } from "../../../redux/order/customer/action";
 import { CLEAR_ORDER_ERROR } from "../../../redux/order/customer/actionType";
 import LoadingText from "../../../shared/components/infoText/LoadingText";
 import ErrorSnackBar from "../../../shared/components/snackBar/ErrorSnackBar";
@@ -25,7 +25,7 @@ const OrderDetails = ({ order, activeStep }) => {
   }, []);
 
   useEffect(() => {
-    dispatch(getOrderById(params.orderId));
+    dispatch(findOrderById(params.orderId));
   }, [params.orderId]);
 
   return (
