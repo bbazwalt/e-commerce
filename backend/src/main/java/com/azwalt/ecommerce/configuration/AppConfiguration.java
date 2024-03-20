@@ -32,8 +32,8 @@ public class AppConfiguration {
 		return httpSecurity
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(ApiConstants.BASE_API_PATH + "products/**").permitAll()
-						.requestMatchers(ApiConstants.BASE_API_PATH + "**").authenticated().anyRequest().permitAll())
+						.requestMatchers(ApiConstants.BASE_API_PATH + "/products/**").permitAll()
+						.requestMatchers(ApiConstants.BASE_API_PATH + "/**").authenticated().anyRequest().permitAll())
 				.addFilterBefore(new TokenValidator(), BasicAuthenticationFilter.class).csrf(csrf -> {
 					try {
 						csrf.disable().cors(cors -> cors.configurationSource(corsConfigurationSource()));
