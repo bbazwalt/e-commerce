@@ -1,6 +1,6 @@
 ﻿# e-commerce
 
-E-Commerce Web App • Live Link: https://azwalt-e-commerce.vercel.app/
+E-Commerce Web App • Live Link: https://azwalt-e-commerce.vercel.app
 
 • Tech Stack: Java, Spring Boot, JavaScript, React, Redux, Tailwind CSS, MUI, MySQL, Hibernate, Razorpay, Docker, Render, Vercel & TiDB Cloud.
 
